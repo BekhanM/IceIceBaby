@@ -1,0 +1,117 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+!pragma layout smetana
+
+Class Main
+Main : + static void main (String[] args)
+Main : + startMenu();
+
+
+package "model" {
+Class User
+User : - String username
+User : - String Password
+User : - double height
+User : - double weight
+User : - int age
+User : - String gender
+User : + BMI bmi
+User : + String toString();
+
+Class TrainingProgram
+TrainingProgram : - rest
+TrainingProgram : + displayExercises();
+TrainingProgram : + trainingSchedule();
+TrainingProgram : + intensity();
+TrainingProgram : + trainingTemplate();
+TrainingProgram : + addExercise();
+TrainingProgram : + modifySchedule();
+TrainingProgram : + addExerciseToDatabase();
+
+Class Exercises
+Exercises : - name
+Exercises : - duration
+Exercises : - reps
+Exercises : - sets
+
+Class BMI
+BMI : - targetWeight
+BMI : - Scanner scanner
+BMI : - double height
+BMI : - double weight
+BMI : - int age
+BMI : - String gender
+BMI : + bmiCalculator();
+BMI : + updateBMI();
+
+Class Nutrition
+Nutrition : + BMI bmi
+Nutrition : + nutritionIntake();
+Nutrition : + trackedNutrition();
+Nutrition : + recommendedNutritionIntake();
+Nutrition : + addNewFood();
+
+
+Class Food
+Food : - Calories
+Food : - Protein
+Food : + addFoodToDatabase();
+}
+
+package "util" {
+Class TextUI
+TextUI : - Scanner scanner
+TextUI : + String getInput(String msg)
+TextUI : + void displayMessage(String msg)
+
+Class DatabaseIO
+DatabaseIO : + displayDatabase();
+DatabaseIO : + displayUser();
+DatabaseIO : + getAuthenticatedUser();
+DatabaseIO : + displayFood();
+DatabaseIO : + updateDatabase();
+DatabaseIO : + saveUserDatabase();
+DatabaseIO : + removeUserData();
+DatabaseIO : + saveUserInput();
+DatabaseIO : + readExerciseData();
+DatabaseIO : + addFood();
+DatabaseIO : + searchForFood();
+
+Class DataValidator
+DataValidator : + validateUsername();
+DataValidator : + validatePassword();
+}
+
+
+Class BroScience
+BroScience : - DatabaseIO databaseIO
+BroScience : - TextUI ui
+BroScience : - User user
+BroScience : + startMenu();
+BroScience : + mainMenu();
+BroScience : + registerUser(User user, Password password);
+BroScience : + removeUser(User user, Password password);
+BroScience : + login();
+BroScience : + logout();
+
+Main *-- BroScience
+BroScience *-- TextUI
+BroScience *-- User
+BroScience *-- DatabaseIO
+BroScience *-- Nutrition
+BroScience *-- DataValidator
+
+DatabaseIO *-- Food
+DatabaseIO *-- TrainingProgram
+DatabaseIO *-- User
+DatabaseIO *-- Nutrition
+
+User *-- BMI
+User *-- TrainingProgram
+
+Nutrition *-- BMI
+Nutrition *-- Food
+
+TrainingProgram *-- Exercises
+
+@enduml

@@ -1,0 +1,47 @@
+@startuml
+!pragma layout smetana
+'https://plantuml.com/sequence-diagram
+
+object Main
+object User
+object BroScience
+object Library
+object Exercises
+object Food
+object BMI
+object Schedule
+object TrainingPrograms
+object Nutrition
+object NutritionPlan
+object Calories
+object TargetWeight
+object Intensity
+object RecommendedCalories
+
+Main *-- BroScience
+
+BroScience *-- User
+BroScience *-- Library
+
+User *-- TrainingPrograms
+User *-- BMI
+User *-- TargetWeight
+
+TrainingPrograms *-- Schedule
+
+Library <|-- Exercises
+
+Schedule *-- Exercises
+
+Exercises *-- Intensity
+
+BMI *-- NutritionPlan
+
+NutritionPlan *-- Food
+NutritionPlan *-- RecommendedCalories
+
+Food *-- Nutrition
+Food *-- Calories
+
+
+@enduml
