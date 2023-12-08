@@ -1,4 +1,4 @@
-package org.example;
+package Program;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
@@ -6,7 +6,8 @@ public class Main {
     public static void main(String[] args) {
         System.out.printf(" welcome!");
 
-        System.out.println("Min baby bar' smil, vi' i Milano\n" +
+        System.out.println(
+                "Min baby bar' smil, vi' i Milano\n" +
                 "Hun kalder mig for: \"Papi El Capitano\"\n" +
                 "Min brormand, bar' spis\n" +
                 "For ingen skal mangl' noget\n" +
