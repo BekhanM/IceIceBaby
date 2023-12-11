@@ -17,4 +17,28 @@ public class User {
         this.age = age;
         this.gender = gender;
     }
+
+    public String getUsername() {
+        return username;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public double getHeight() {
+        return height;
+    }
+    public double getWeight() {
+        return weight;
+    }
+    public int getAge() {
+        return age;
+    }
+    public String getGender() {
+        return gender;
+    }
+
+    @Override
+    public String toString() {
+        return "Username: " + username + "\nPassword: " + password + "\nHeight: " + height + "\nWeight: " + weight + "\nAge: " + age + "\nGender: " + gender;
+    }
 }
