@@ -9,7 +9,7 @@ import java.sql.*;
         static final String DB_URL = "jdbc:mysql://localhost/broscience";
         //  Database credentials
         static final String USER = "root";
-        static final String PASS = "Fuckdig79";
+        static final String PASS = "Heisenberg2001!";
         String username1;
         String password1;
         User user = new User("pølsefar","pølsefar1234",182.0,81.0,22,"female");

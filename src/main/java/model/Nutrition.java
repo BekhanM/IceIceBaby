@@ -5,7 +5,7 @@ import util.DatabaseIO;
 public class Nutrition {
     BMI bmi = new BMI();
     double yourBMI = bmi.bmiCalculator();
-    User user = new User("falser","pølsefar1234",182.0,81.0,22,"female");
+    User user = new User("pølsefar","pølsefar1234",182.0,81.0,22,"female");
     DatabaseIO db = new DatabaseIO();
 
     public void addNutrition() {
