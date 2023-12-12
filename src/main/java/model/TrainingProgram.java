@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class TrainingProgram {
     TextUI ui = new TextUI();
     ArrayList<Exercises> exercises;
-    Exercises BenchPress = new Exercises("Bench Press",20,12,3);
+    Exercises BenchPress = new Exercises("Bench Press",20,12);
     ArrayList<String> schedule;
     private int rest;
 

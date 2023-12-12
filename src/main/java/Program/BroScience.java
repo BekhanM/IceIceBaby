@@ -12,7 +12,7 @@ public class BroScience {
         ui.displayMessage("Velkommen til Bro Science, landets bedste app for bros der elsker gains");
         String i = ui.getInput("Hvad gør du her bro?\n1) Login\n2) Opret ny bruger");
         if (i.equals("1")) {
-            //login();
+            login();
         } else if (i.equals("2")) {
             //addUser();
         } else {
