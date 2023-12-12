@@ -1,7 +1,18 @@
 package util;
 
+import java.util.Scanner;
+import javax.swing.JOptionPane;
+
+
 public class TextUI {
-    public void methodeaw(){
-        System.out.println("i like to eat ass");
+    private Scanner scan = new Scanner(System.in);
+
+    public String getInput(String msg) {
+
+        return JOptionPane.showInputDialog(msg);
+    }
+
+    public void displayMessage(String msg) {
+        JOptionPane.showMessageDialog(null,msg);
     }
 }
