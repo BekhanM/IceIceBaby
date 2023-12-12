@@ -3,11 +3,14 @@ import model.Nutrition;
 
 import model.User;
 
+import model.BMI;
+
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 import java.util.Arrays;
 
 public class Main {
+
     public static void main(String[] args) {
         BroScience bro = new BroScience();
         bro.startMenu();
@@ -17,5 +20,7 @@ public class Main {
         System.out.println(user);
         System.out.println("Vil du bulke?");
         nutrition.recommendedNutritionIntakeBulk();
+     BMI bmi = new BMI();
+     bmi.updateBMI();
     }
 }
