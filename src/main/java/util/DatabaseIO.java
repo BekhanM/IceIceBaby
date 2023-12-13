@@ -336,35 +336,6 @@ public class DatabaseIO {
     }
 
 
-    public void saveUserData(String newName, String newPassword) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
-            String sql = "INSERT INTO USER (name, password) VALUES ( ?, ?)";
-            stmt = conn.prepareStatement(sql);
-
-            stmt.setString(1, newName);
-            stmt.setString(2, newPassword);
-
-            int rowsAffected = stmt.executeUpdate();
-            if (rowsAffected > 0) {
-                ui.displayMessage("Brugeren er gemt");
-            } else {
-                ui.displayMessage("Mislykkedes at gemme brugeren");
-            }
-
-            stmt.close();
-            conn.close();
-        } catch (SQLException se) {
-            se.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public void removeUserData(String newName, String newPassword) {
         Connection conn = null;
@@ -394,62 +365,5 @@ public class DatabaseIO {
         }
     }
 
-    public void displayWatchedList() {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            //STEP 1: Register JDBC driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
 
-            //STEP 2: Open a connection
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
-            //STEP 3: Execute a query
-            String sql = "SELECT watched_content.movieID, movie.name FROM watched_content JOIN movie ON watched_content.movieID = movie.movieID WHERE watched_content.userID = ?";
-            stmt = conn.prepareStatement(sql);
-
-            ResultSet rs = stmt.executeQuery();
-
-            //STEP 4: Extract data from result set
-            while (rs.next()) {
-
-
-                String genre = rs.getString("Genre");
-                String name = rs.getString("Name");
-                int year = rs.getInt("Year");
-                double rating = rs.getDouble("Rating");
-
-                String formatString = "Name: %-45sGenre: %-35sRelease Date: %-12sRating:%-5.2f";
-
-                String formattedOutput = String.format(formatString, name, genre, year, rating);
-                ui.displayMessage(formattedOutput);
-
-            }
-            //STEP 5: Clean-up environment
-            rs.close();
-            stmt.close();
-            conn.close();
-        } catch (SQLException se) {
-            //Handle errors for JDBC
-            se.printStackTrace();
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        } finally {
-
-            try {
-                if (stmt != null) stmt.close();
-            } catch (SQLException se2) {
-            }
-            try {
-                if (conn != null) conn.close();
-            } catch (SQLException se) {
-                se.printStackTrace();
-            }//end finally try
-        }//end try
-    }
-
-    public void displayMyList() {
-
-    }
 }

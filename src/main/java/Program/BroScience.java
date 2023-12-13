@@ -8,6 +8,7 @@ import util.DatabaseIO;
 import util.TextUI;
 
 public class BroScience {
+    DatabaseIO dbIO = new DatabaseIO();
     private final TextUI ui = new TextUI();
     private String userInputUsername;
     private String userInputPassword;
