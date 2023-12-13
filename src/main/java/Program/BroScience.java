@@ -1,9 +1,11 @@
 package Program;
 
 import model.User;
+import util.DatabaseIO;
 import util.TextUI;
 
 public class BroScience {
+    DatabaseIO dbIO = new DatabaseIO();
     private final TextUI ui = new TextUI();
     private String userInputUsername;
     private String userInputPassword;
@@ -14,7 +16,7 @@ public class BroScience {
         if (i.equals("1")) {
             //login();
         } else if (i.equals("2")) {
-            //addUser();
+            dbIO.addUser();
         } else {
             ui.displayMessage("Ik alt muligt andet, vælg mellem 1 eller 2 bro");
             startMenu();

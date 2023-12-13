@@ -1,6 +1,7 @@
 package Program;
 import model.Nutrition;
 
+import model.TrainingProgram;
 import model.User;
 
 import model.BMI;
@@ -13,14 +14,10 @@ public class Main {
 
     public static void main(String[] args) {
         BroScience bro = new BroScience();
-        bro.startMenu();
-        Nutrition nutrition = new Nutrition();
+        TrainingProgram proBro = new TrainingProgram();
 
-        User user = new User("Otto","taber",1.94,94.20,22,"mand");
-        System.out.println(user);
-        System.out.println("Vil du bulke?");
-        nutrition.recommendedNutritionIntakeBulk();
-     BMI bmi = new BMI();
-     bmi.updateBMI();
+        //bro.startMenu();
+        proBro.displayExercises();
+
     }
 }
