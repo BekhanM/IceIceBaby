@@ -10,7 +10,7 @@ public class TrainingProgram {
     static final String DB_URL = "jdbc:mysql://localhost/broscience";
     //  Database credentials
     static final String USER = "root";
-    static final String PASS = "NieMeyerRull2";
+    static final String PASS = "Heisenberg2001!";
     //-------------------------------------------------------------------------
 
 
