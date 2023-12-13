@@ -10,7 +10,7 @@ public class DatabaseIO {
     static final String DB_URL = "jdbc:mysql://localhost/broscience";
     //  Database credentials
     static final String USER = "root";
-    static final String PASS = "Heisenberg2001!";
+    static final String PASS = "Fuckdig79";
     String username;
     String puffPass;
     double height;
@@ -82,7 +82,7 @@ public class DatabaseIO {
 
 
     private boolean checkUsername(String username) throws SQLException {
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
+        try(Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)){
             String query = "SELECT COUNT(*) FROM USER WHERE Username = ?";
             try (PreparedStatement statement = conn.prepareStatement(query)) {
                 statement.setString(1, username);
@@ -98,6 +98,7 @@ public class DatabaseIO {
         }
         return false;
     }
+
 
 
     public User getAuthenticatedUser(String username, String puffPass) {
@@ -130,7 +131,10 @@ public class DatabaseIO {
                 double retrievedHeight = rs.getDouble("height");
                 double retrievedWeight = rs.getDouble("weight");
 
-                user = new User(username, puffPass, retrievedHeight, retrievedWeight, age, gender, bmi);
+                user = new User(username, puffPass,retrievedHeight,retrievedWeight,age,gender,bmi);
+                ui.displayMessage("Nice dude, username/password passer!");
+                ui.displayMessage("Velkommen, " + username + " the GOAT!");
+                ui.displayMessage("Ser stærk ud i dag, " + username + "!");
 
             } else {
                 ui.displayMessage("Brugernavn findes ikke, ellers kan du ikke stave, dumbass.");
@@ -170,7 +174,7 @@ public class DatabaseIO {
 
                 String name = rs.getString("Name");
                 double caloriesPr100 = rs.getDouble("caloriesPr100");
-                double proteinPr100 = rs.getDouble("proteinPr100");
+                double proteinPr100= rs.getDouble("proteinPr100");
 
                 String formatString = "Name: %-45sCalories: %-12.2fProtein: %-5.2f";
                 String formattedOutput = String.format(formatString, name, caloriesPr100, proteinPr100);
@@ -316,6 +320,7 @@ public class DatabaseIO {
         PreparedStatement stmt = null;
 
 
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -329,7 +334,7 @@ public class DatabaseIO {
             double protein = Double.parseDouble(ui.getInput("Skriv protein per 100g"));
             stmt.setString(1, name);
             stmt.setDouble(2, calories);
-            stmt.setDouble(3, protein);
+            stmt.setDouble(3,protein);
 
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
@@ -346,6 +351,7 @@ public class DatabaseIO {
             e.printStackTrace();
         }
     }
+
 
 
     public void removeUserData(String newName, String newPassword) {

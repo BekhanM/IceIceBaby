@@ -70,7 +70,8 @@ public class Datavalidator {
         if (i && j && k) {
             return true;
         } else {
-            return validatePassword(password);
+            return false;
+
         }
     }
     }
