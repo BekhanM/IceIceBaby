@@ -24,8 +24,6 @@ public class Main {
 
        // bmi.updateBMI(user);
         bro.startMenu();
-        //db.addFood();
-
         //proBro.displayExercises();
 
     }

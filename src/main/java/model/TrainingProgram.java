@@ -10,7 +10,7 @@ public class TrainingProgram {
     static final String DB_URL = "jdbc:mysql://localhost/broscience";
     //  Database credentials
     static final String USER = "root";
-    static final String PASS = "Heisenberg2001!";
+    static final String PASS = "NieMeyerRull2";
     //-------------------------------------------------------------------------
 
 
@@ -132,7 +132,38 @@ public class TrainingProgram {
 
     }
     public void addExerciseToDatabase() {
+        Connection conn = null;
+        PreparedStatement stmt = null;
 
+
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql = "INSERT INTO EXERCISES (NAME, FOCUSGROUP) VALUES (?, ?);";
+            stmt = conn.prepareStatement(sql);
+
+
+            String name = ui.getInput("Indtast den øvelse du vil tilføje");
+            String muscleGroup = ui.getInput("Hvad for en muskelgruppe tilhører den til?");
+            stmt.setString(1, name);
+            stmt.setString(2, muscleGroup);
+
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                ui.displayMessage(name+" er tilføjet");
+            } else {
+                ui.displayMessage("Mislykkes at gemme");
+            }
+
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
