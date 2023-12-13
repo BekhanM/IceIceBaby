@@ -29,7 +29,6 @@ public class BMI {
         System.out.println(bmi);
         ui.displayMessage("Din BMI er: " + bmi);
 
-        checkBMI();
 
         return bmi;
     }
@@ -43,6 +42,7 @@ public class BMI {
             int age = user.getAge();
             double newBMI = bmiCalculator(height, newWeight, age); // Calculate the new BMI
             db.saveToDatabase(newBMI, user.getUsername()); // Assuming you have a method to get the user's ID
+            checkBMI();
         }
     }
 
