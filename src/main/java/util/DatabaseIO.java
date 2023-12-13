@@ -10,7 +10,7 @@ public class DatabaseIO {
     static final String DB_URL = "jdbc:mysql://localhost/broscience";
     //  Database credentials
     static final String USER = "root";
-    static final String PASS = "NieMeyerRull2";
+    static final String PASS = "Heisenberg2001!";
     String username1;
     String password1;
     User user = new User("pølsefar","pølsefar1234",182.0,81.0,22,"female");
@@ -94,7 +94,7 @@ public class DatabaseIO {
 
 
 
-    public User getAuthenticatedUser(String name, String puffPass) {
+    public User getAuthenticatedUser(String username, String puffPass) {
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -107,19 +107,19 @@ public class DatabaseIO {
             System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-            String sql = "SELECT name, password FROM USER WHERE name = ? AND password = ? ";
+            String sql = "SELECT username, password FROM USER WHERE username = ? AND password = ? ";
             stmt = conn.prepareStatement(sql);
 
-            stmt.setString(1, name);
+            stmt.setString(1, username);
             stmt.setString(2, puffPass);
 
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                user = new User(name, puffPass,182.0,81.0,22,"female");
+                user = new User(username, puffPass,182.0,81.0,22,"female");
                 ui.displayMessage("Nice dude, username/password passer!");
-                ui.displayMessage("Velkommen, " + name + " the GOAT!");
-                ui.displayMessage("Ser stærk ud i dag, " + name + "!");
+                ui.displayMessage("Velkommen, " + username + " the GOAT!");
+                ui.displayMessage("Ser stærk ud i dag, " + username + "!");
             } else {
                 ui.displayMessage("Brugernavn findes ikke, ellers kan du ikke stave, dumbass.");
             }

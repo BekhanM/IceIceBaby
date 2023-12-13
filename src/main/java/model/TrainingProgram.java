@@ -73,4 +73,5 @@ public class TrainingProgram {
     public void addExerciseToDatabase() {
 
     }
+
 }
