@@ -42,7 +42,7 @@ public class BMI {
             double height = user.getHeight();
             int age = user.getAge();
             double newBMI = bmiCalculator(height, newWeight, age); // Calculate the new BMI
-            db.saveToDatabase(newBMI, user.getUsername()); // Assuming you have a method to get the user's ID
+            db.saveToDatabase(newBMI, newWeight, user.getUsername()); // Assuming you have a method to get the user's ID
         }
     }
 

@@ -380,7 +380,7 @@ public class DatabaseIO {
             e.printStackTrace();
         }
     }
-    public void saveToDatabase(double newBMI, String username) {
+    public void saveToDatabase(double newBMI, double newWeight, String username) {
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -392,12 +392,13 @@ public class DatabaseIO {
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
             // Update query with parameters
-            String sql = "UPDATE `broscience`.`user` SET `bmi` = ? WHERE `username` = ?";
+            String sql = "UPDATE `broscience`.`user` SET `bmi` = ?, `weight` = ?  WHERE `username` = ?";
             stmt = conn.prepareStatement(sql);
 
             // Set the parameters
             stmt.setDouble(1, newBMI);
-            stmt.setString(2, username);
+            stmt.setDouble(2, newWeight);
+            stmt.setString(3, username);
 
             // Execute the update
             int rowsAffected = stmt.executeUpdate();
