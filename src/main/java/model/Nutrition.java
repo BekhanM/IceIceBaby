@@ -3,9 +3,12 @@ package model;
 import util.DatabaseIO;
 
 public class Nutrition {
+    double height;
+    double weight;
+    int age;
     BMI bmi = new BMI();
-    double yourBMI = bmi.bmiCalculator();
-    User user = new User("pølsefar","pølsefar1234",182.0,81.0,22,"female");
+    double yourBMI = bmi.bmiCalculator(height,weight,age);
+    User user = new User("falser","pølsefar1234",182.0,81.0,22,"female");
     DatabaseIO db = new DatabaseIO();
 
     public void addNutrition() {

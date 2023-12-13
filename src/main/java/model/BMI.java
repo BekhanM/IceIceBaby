@@ -19,10 +19,10 @@ public class BMI {
     DecimalFormat dec = new DecimalFormat("#,##");
 
 
-   public double bmiCalculator(/*double weight,double height,int age*/){
-       weight =  Double.parseDouble(ui.getInput("Indtast din vægt i metrisk"));
+   public double bmiCalculator(double height,double weight, int age){
+      /* weight =  Double.parseDouble(ui.getInput("Indtast din vægt i metrisk"));
        height =  Double.parseDouble(ui.getInput("Indtast din højde i metrisk"));
-       age = Integer.parseInt(ui.getInput("Indtast din alder"));
+       age = Integer.parseInt(ui.getInput("Indtast din alder"));*/
 
        bmi = weight/(height*height);
 
@@ -36,7 +36,7 @@ public class BMI {
    public void updateBMI(){
        if (JOptionPane.showConfirmDialog(null, "Vil du opdatere dit BMI? ", "BMI UPDATE",
                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-           bmiCalculator();
+           bmiCalculator(height,weight,age);
         }
        }
 
