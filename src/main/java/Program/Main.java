@@ -1,6 +1,7 @@
 package Program;
 import model.Nutrition;
 
+import model.TrainingProgram;
 import model.User;
 
 import model.BMI;
@@ -14,8 +15,10 @@ public class Main {
 
     public static void main(String[] args) {
         BroScience bro = new BroScience();
-        bro.startMenu();
+        TrainingProgram proBro = new TrainingProgram();
 
+        //bro.startMenu();
+        proBro.displayExercises();
 
     }
 }

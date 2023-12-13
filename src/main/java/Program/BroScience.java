@@ -1,5 +1,8 @@
 package Program;
 
+import model.BMI;
+import model.Nutrition;
+import model.TrainingProgram;
 import model.User;
 import util.DatabaseIO;
 import util.TextUI;
@@ -7,10 +10,14 @@ import util.TextUI;
 import javax.xml.crypto.Data;
 
 public class BroScience {
+    DatabaseIO dbIO = new DatabaseIO();
     private final TextUI ui = new TextUI();
     private String userInputUsername;
     private String userInputPassword;
     DatabaseIO db = new DatabaseIO();
+    BMI bmi = new BMI();
+    TrainingProgram tp = new TrainingProgram();
+    Nutrition nutrition = new Nutrition();
 
     public void startMenu() {
         ui.displayMessage("Velkommen til Bro Science, landets bedste app for bros der elsker gains!");
@@ -26,6 +33,28 @@ public class BroScience {
     }
 
     public void mainMenu() {
+        String i = ui.getInput("Du har nu følgene valgmulighedheder:\n1) Opdater din BMI\n2) Opdater dit træningsprogram\n3) Tilføj mad du har spist\n4) Se træningsprogrammer\n5) Logout");
+        switch(i) {
+            case "1":
+                bmi.updateBMI();
+                break;
+            case "2":
+                tp.modifySchedule();
+                break;
+            case "3":
+                nutrition.addNutrition();
+                break;
+            case "4":
+                tp.trainingTemplate();
+                break;
+            case "5":
+                //logout();
+                break;
+            default:
+                ui.displayMessage("Sværger du en idiot skriv et af tallene din mongol");
+                mainMenu();
+                break;
+        }
         ui.displayMessage("du er logget ind som " + userInputUsername);
     }
 
@@ -33,6 +62,8 @@ public class BroScience {
         userInputUsername = ui.getInput("Brugernavn: ");
         userInputPassword = ui.getInput("Kodeord: ");
 
+
+        User authenticatedUser = db.getAuthenticatedUser(userInputUsername, userInputPassword);
                                         // Bruges bare indtil databasen er oprettet
         User authenticatedUser = db.getAuthenticatedUser(userInputUsername, userInputPassword);
 
