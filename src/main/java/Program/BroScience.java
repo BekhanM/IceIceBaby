@@ -62,11 +62,7 @@ public class BroScience {
         userInputUsername = ui.getInput("Brugernavn: ");
         userInputPassword = ui.getInput("Kodeord: ");
 
-
         User authenticatedUser = db.getAuthenticatedUser(userInputUsername, userInputPassword);
-                                        // Bruges bare indtil databasen er oprettet
-        User authenticatedUser = db.getAuthenticatedUser(userInputUsername, userInputPassword);
-
 
         if (authenticatedUser != null && authenticatedUser.getUsername().equals(userInputUsername) && authenticatedUser.getPassword().equals(userInputPassword)) {
             mainMenu();
