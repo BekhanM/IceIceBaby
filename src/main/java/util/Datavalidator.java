@@ -70,21 +70,8 @@ public class Datavalidator {
         if (i && j && k) {
             return true;
         } else {
-            return false;
+            return validatePassword(password);
         }
     }
-
-    // Skal tjekke om username/password allerede eksisterer ved at sammenligne indhold i arraylist med ny brugerinput
-    public boolean checkRegisterUsernamePassword(ArrayList<String> users, String enteredUsername) {
-
-        for (String user : users) {
-            String[] userInfo = user.split(",");
-            String username = userInfo[0];
-            if (username.contentEquals(enteredUsername)) {
-                ui.displayMessage("Brugernavn findes, prøv igen ");
-                return false;
-            }
-        }
-        return true;
     }
-}
+

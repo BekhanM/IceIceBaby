@@ -38,14 +38,14 @@ public class DatabaseIO {
             String username = ui.getInput("indtast din brugernavn smukke");
 
             // Check if the username already exists in the database
-            if (!checkUsername( username)) {
+            if (!checkUsername(username)) {
                 String password = ui.getInput("indtast din kodeord");
-                if(dv.validatePassword(password)==true){
+                if (dv.validatePassword(password) == true) {
                     double height = Double.parseDouble(ui.getInput("Indtast din højde"));
                     double weight = Double.parseDouble(ui.getInput("Indtast din vægt"));
                     int age = Integer.parseInt(ui.getInput("Indtast din alder flinke"));
                     String gender = ui.getInput("Er du mand,kone eller noget andet?");
-                    double userBMI = bmi.bmiCalculator(height,weight,age);
+                    double userBMI = bmi.bmiCalculator(height, weight, age);
 
                     String sql = "INSERT INTO USER (username, password,height,weight,age,gender,bmi) VALUES (?, ? , ? , ? , ? , ? , ?)";
                     stmt = conn.prepareStatement(sql);
@@ -82,7 +82,7 @@ public class DatabaseIO {
 
 
     private boolean checkUsername(String username) throws SQLException {
-        try(Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)){
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
             String query = "SELECT COUNT(*) FROM USER WHERE Username = ?";
             try (PreparedStatement statement = conn.prepareStatement(query)) {
                 statement.setString(1, username);
@@ -100,13 +100,12 @@ public class DatabaseIO {
     }
 
 
-
     public User getAuthenticatedUser(String username, String puffPass) {
         BMI bmi = new BMI();
         Connection conn = null;
         PreparedStatement stmt = null;
 
-        this.username =username;
+        this.username = username;
         this.puffPass = puffPass;
 
         user = null;
@@ -131,10 +130,7 @@ public class DatabaseIO {
                 double retrievedHeight = rs.getDouble("height");
                 double retrievedWeight = rs.getDouble("weight");
 
-                user = new User(username, puffPass,retrievedHeight,retrievedWeight,age,gender,bmi);
-                ui.displayMessage("Nice dude, username/password passer!");
-                ui.displayMessage("Velkommen, " + username + " the GOAT!");
-                ui.displayMessage("Ser stærk ud i dag, " + username + "!");
+                user = new User(username, puffPass, retrievedHeight, retrievedWeight, age, gender, bmi);
 
             } else {
                 ui.displayMessage("Brugernavn findes ikke, ellers kan du ikke stave, dumbass.");
@@ -174,7 +170,7 @@ public class DatabaseIO {
 
                 String name = rs.getString("Name");
                 double caloriesPr100 = rs.getDouble("caloriesPr100");
-                double proteinPr100= rs.getDouble("proteinPr100");
+                double proteinPr100 = rs.getDouble("proteinPr100");
 
                 String formatString = "Name: %-45sCalories: %-12.2fProtein: %-5.2f";
                 String formattedOutput = String.format(formatString, name, caloriesPr100, proteinPr100);
@@ -259,6 +255,7 @@ public class DatabaseIO {
             }//end finally try
         }
     }
+
     public void searchFood() {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -319,7 +316,6 @@ public class DatabaseIO {
         PreparedStatement stmt = null;
 
 
-
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -328,12 +324,12 @@ public class DatabaseIO {
             stmt = conn.prepareStatement(sql);
 
 
-            String name = ui.getInput("Skriv maden sum du vil tilføje " );
+            String name = ui.getInput("Skriv maden sum du vil tilføje ");
             double calories = Double.parseDouble(ui.getInput("Skriv calories per 100g, tjak"));
             double protein = Double.parseDouble(ui.getInput("Skriv protein per 100g"));
             stmt.setString(1, name);
             stmt.setDouble(2, calories);
-            stmt.setDouble(3,protein);
+            stmt.setDouble(3, protein);
 
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
@@ -350,7 +346,6 @@ public class DatabaseIO {
             e.printStackTrace();
         }
     }
-
 
 
     public void removeUserData(String newName, String newPassword) {
@@ -380,6 +375,7 @@ public class DatabaseIO {
             e.printStackTrace();
         }
     }
+
     public void saveToDatabase(double newBMI, double newWeight, String username) {
         Connection conn = null;
         PreparedStatement stmt = null;

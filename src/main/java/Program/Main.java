@@ -18,11 +18,14 @@ public class Main {
         User user = new User("dfdfd","asfasfafs",1.90,100,23,"other",bmi);
         BroScience bro = new BroScience();
         TrainingProgram proBro = new TrainingProgram();
+        DatabaseIO db = new DatabaseIO();
 
 
 
        // bmi.updateBMI(user);
         bro.startMenu();
+        //db.addFood();
+
         //proBro.displayExercises();
 
     }

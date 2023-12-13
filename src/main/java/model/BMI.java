@@ -17,7 +17,7 @@ public class BMI {
     double bmi;
     BMI bmi1;
     String gender;
-    User user = new User(username,password,height,weight,age,gender,bmi1);
+    User user = new User(username, password, height, weight, age, gender, bmi1);
 
 
     TextUI ui = new TextUI();
@@ -26,7 +26,6 @@ public class BMI {
 
     public double bmiCalculator(double height, double weight, int age) {
         double bmi = weight / (height * height);
-        System.out.println(bmi);
         ui.displayMessage("Din BMI er: " + bmi);
 
 
@@ -42,20 +41,28 @@ public class BMI {
             int age = user.getAge();
             double newBMI = bmiCalculator(height, newWeight, age); // Calculate the new BMI
             db.saveToDatabase(newBMI, newWeight, user.getUsername()); // Assuming you have a method to get the user's ID
-            checkBMI();
+
+            //ui.displayMessage("Din BMI er: " + newBMI);
+
         }
     }
 
 
-   public void checkBMI() {
-       if (bmi < 18.5) {
-           ui.displayMessage("Du er sgu en lille stang");
-       } else if (bmi >= 18.5 && bmi <= 24.9) {
-           ui.displayMessage("Perfekt");
-       } else if (bmi >= 25 && bmi <= 29.9) {
-           ui.displayMessage("Du er overvægtigt brormand");
-       } else {
-           ui.displayMessage("Du skal tabe dig med det samme");
-       }
-   }
+    public void checkBMI(User user) {
+        double weight = user.getWeight();
+        double height = user.getHeight();
+        int age = user.getAge();
+
+        double userBMI = weight / (height * height);
+
+        if (userBMI < 18.5) {
+            ui.displayMessage("Du er sgu en lille stang");
+        } else if (userBMI >= 18.5 && userBMI <= 24.9) {
+            ui.displayMessage("Perfekt");
+        } else if (userBMI >= 25 && userBMI <= 29.9) {
+            ui.displayMessage("Du er overvægtigt brormand");
+        } else {
+            ui.displayMessage("Du skal tabe dig med det samme");
+        }
+    }
 }

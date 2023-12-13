@@ -7,17 +7,15 @@ import model.User;
 import util.DatabaseIO;
 import util.TextUI;
 
-import javax.xml.crypto.Data;
-
 public class BroScience {
-    DatabaseIO dbIO = new DatabaseIO();
     private final TextUI ui = new TextUI();
-    private String userInputUsername;
-    private String userInputPassword;
+    DatabaseIO dbIO = new DatabaseIO();
     DatabaseIO db = new DatabaseIO();
     BMI bmi = new BMI();
     TrainingProgram tp = new TrainingProgram();
     Nutrition nutrition = new Nutrition();
+    private String userInputUsername;
+    private String userInputPassword;
 
     public void startMenu() {
         ui.displayMessage("Velkommen til Bro Science, landets bedste app for bros der elsker gains!");
@@ -33,21 +31,32 @@ public class BroScience {
     }
 
     public void mainMenu() {
-        String i = ui.getInput("Du har nu følgene valgmulighedheder:\n1) Opdater din BMI\n2) Opdater dit træningsprogram\n3) Tilføj mad du har spist\n4) Se træningsprogrammer\n5) Logout");
-        switch(i) {
+        String i = ui.getInput("Du har nu følgene valgmulighedheder:" +
+                "\n1) Opdater din BMI" +
+                "\n2) Opdater dit træningsprogram" +
+                "\n3) Tilføj mad til databasen" +
+                "\n4) Se dit træningsporgram" +
+                "\n5) Tilføj mad du har spist" +
+                "\n6) Logout");
+
+
+        switch (i) {
             case "1":
-               bmi.updateBMI(db.getAuthenticatedUser(userInputUsername, userInputPassword));
+                bmi.updateBMI(db.getAuthenticatedUser(userInputUsername, userInputPassword));
+                bmi.checkBMI(db.getAuthenticatedUser(userInputUsername, userInputPassword));
                 break;
             case "2":
                 tp.modifySchedule();
                 break;
             case "3":
-                nutrition.addNutrition();
+                db.addFood();
                 break;
             case "4":
                 tp.trainingTemplate();
-                break;
             case "5":
+
+                break;
+            case "6":
                 //logout();
                 break;
             default:
@@ -55,7 +64,6 @@ public class BroScience {
                 mainMenu();
                 break;
         }
-        ui.displayMessage("du er logget ind som " + userInputUsername);
     }
 
     public void login() {
@@ -65,6 +73,9 @@ public class BroScience {
         User authenticatedUser = db.getAuthenticatedUser(userInputUsername, userInputPassword);
 
         if (authenticatedUser != null && authenticatedUser.getUsername().equals(userInputUsername) && authenticatedUser.getPassword().equals(userInputPassword)) {
+            ui.displayMessage("Nice dude, username/password passer!");
+            ui.displayMessage("Velkommen, " + userInputUsername + " the GOAT!");
+            ui.displayMessage("Ser stærk ud i dag, " + userInputUsername + "!");
             mainMenu();
         } else {
             login();
