@@ -67,7 +67,7 @@ public class TrainingProgram {
     public void addExercise(ArrayList<Exercises> exercise) {
 
     }
-    public void modifySchedule(String newSchedule) {
+    public void modifySchedule() {
 
     }
     public void addExerciseToDatabase() {

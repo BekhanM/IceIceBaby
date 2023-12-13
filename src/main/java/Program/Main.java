@@ -1,8 +1,6 @@
 package Program;
 import model.Nutrition;
-
 import model.User;
-
 import model.BMI;
 import util.DatabaseIO;
 
@@ -13,10 +11,10 @@ import java.util.Arrays;
 public class Main {
 
     public static void main(String[] args) {
-      /*  BroScience bro = new BroScience();
+      BroScience bro = new BroScience();
         bro.startMenu();
         Nutrition nutrition = new Nutrition();
-
+/*
         User user = new User("Otto","taber",1.94,94.20,22,"mand");
         System.out.println(user);
         System.out.println("Vil du bulke?");
@@ -27,7 +25,8 @@ public class Main {
         DatabaseIO dbIO = new DatabaseIO();
         //dbIO.displayFood();
         //dbIO.searchExercise();
-        dbIO.searchFood();
+        //dbIO.searchFood();
+
 
     }
 }
