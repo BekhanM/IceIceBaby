@@ -3,12 +3,15 @@ package model;
 import util.DatabaseIO;
 
 public class Nutrition {
+    String username;
+    String password;
     double height;
     double weight;
     int age;
+    String gender;
     BMI bmi = new BMI();
-    double yourBMI = bmi.bmiCalculator(height,weight,age);
-    User user = new User("falser","pølsefar1234",182.0,81.0,22,"female");
+    BMI yourBMI = new BMI();
+    User user = new User(username,password,height,weight,age,gender,yourBMI);
     DatabaseIO db = new DatabaseIO();
 
     public void addNutrition() {
@@ -26,7 +29,7 @@ public class Nutrition {
         int recommendedProt = 0;
 //**********************************************************************************//
         //100kg
-        if (yourBMI >= 30) {
+        if (yourBMI.bmiCalculator(height,weight,age) >= 30) {
             recommendedCal += 2778;
             recommendedProt += 208;
 
@@ -36,7 +39,7 @@ public class Nutrition {
             }
 //**********************************************************************************//
             //90kg
-        } else if (yourBMI >= 25 && yourBMI <= 29.99) {
+        } else if (yourBMI.bmiCalculator(height,weight,age) >= 25 && yourBMI.bmiCalculator(height,weight,age) <= 29.99) {
             recommendedCal += 2640;
             recommendedProt += 198;
 
@@ -46,7 +49,7 @@ public class Nutrition {
             }
 //**********************************************************************************//
             //70kg
-        } else if (yourBMI >= 18.5 && yourBMI <= 24.99) {
+        } else if (yourBMI.bmiCalculator(height,weight,age) >= 18.5 && yourBMI.bmiCalculator(height,weight,age) <= 24.99) {
             recommendedCal += 2365;
             recommendedProt += 177;
 
@@ -56,7 +59,7 @@ public class Nutrition {
             }
 //**********************************************************************************//
             //50
-        } else if (yourBMI < 18.5) {
+        } else if (yourBMI.bmiCalculator(height,weight,age) < 18.5) {
             recommendedCal += 2090;
             recommendedProt += 157;
 
@@ -77,7 +80,7 @@ public class Nutrition {
         int recommendedProt = 0;
 //**********************************************************************************//
         //100kg
-        if (yourBMI >= 30) {
+        if (yourBMI.bmiCalculator(height,weight,age) >= 30) {
             recommendedCal += 2278;
             recommendedProt += 171;
 
@@ -87,7 +90,7 @@ public class Nutrition {
             }
 //**********************************************************************************//
             //90kg
-        } else if (yourBMI >= 25 && yourBMI <= 29.99) {
+        } else if (yourBMI.bmiCalculator(height,weight,age) >= 25 && yourBMI.bmiCalculator(height,weight,age) <= 29.99) {
             recommendedCal += 2140;
             recommendedProt += 163;
 
@@ -97,7 +100,7 @@ public class Nutrition {
             }
 //**********************************************************************************//
             //70kg
-        } else if (yourBMI >= 18.5 && yourBMI <= 24.99) {
+        } else if (yourBMI.bmiCalculator(height,weight,age) >= 18.5 && yourBMI.bmiCalculator(height,weight,age) <= 24.99) {
             recommendedCal += 1865;
             recommendedProt += 140;
 
@@ -107,7 +110,7 @@ public class Nutrition {
             }
 //**********************************************************************************//
             //50
-        } else if (yourBMI < 18.5) {
+        } else if (yourBMI.bmiCalculator(height,weight,age) < 18.5) {
             recommendedCal += 1590;
             recommendedProt += 119;
 
@@ -128,7 +131,7 @@ public class Nutrition {
         int recommendedProt = 0;
 //**********************************************************************************//
         //100kg
-        if (yourBMI >= 30) {
+        if (yourBMI.bmiCalculator(height,weight,age) >= 30) {
             recommendedCal += 3278;
             recommendedProt += 246;
 
@@ -138,7 +141,7 @@ public class Nutrition {
             }
 //**********************************************************************************//
             //90kg
-        } else if (yourBMI >= 25 && yourBMI <= 29.99) {
+        } else if (yourBMI.bmiCalculator(height,weight,age) >= 25 && yourBMI.bmiCalculator(height,weight,age) <= 29.99) {
             recommendedCal += 3140;
             recommendedProt += 236;
 
@@ -148,7 +151,7 @@ public class Nutrition {
             }
 //**********************************************************************************//
             //70kg
-        } else if (yourBMI >= 18.5 && yourBMI <= 24.99) {
+        } else if (yourBMI.bmiCalculator(height,weight,age) >= 18.5 && yourBMI.bmiCalculator(height,weight,age) <= 24.99) {
             recommendedCal += 2865;
             recommendedProt += 215;
 
@@ -158,7 +161,7 @@ public class Nutrition {
             }
 //**********************************************************************************//
             //50
-        } else if (yourBMI < 18.5) {
+        } else if (yourBMI.bmiCalculator(height,weight,age) < 18.5) {
             recommendedCal += 2590;
             recommendedProt += 194;
 

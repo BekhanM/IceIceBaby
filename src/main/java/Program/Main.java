@@ -14,11 +14,16 @@ import java.util.Arrays;
 public class Main {
 
     public static void main(String[] args) {
+        BMI bmi  = new BMI();
+        User user = new User("dfdfd","asfasfafs",1.90,100,23,"other",bmi);
         BroScience bro = new BroScience();
         TrainingProgram proBro = new TrainingProgram();
 
-        //bro.startMenu();
-        proBro.displayExercises();
+
+
+       // bmi.updateBMI(user);
+        bro.startMenu();
+        //proBro.displayExercises();
 
     }
 }

@@ -36,7 +36,7 @@ public class BroScience {
         String i = ui.getInput("Du har nu følgene valgmulighedheder:\n1) Opdater din BMI\n2) Opdater dit træningsprogram\n3) Tilføj mad du har spist\n4) Se træningsprogrammer\n5) Logout");
         switch(i) {
             case "1":
-                bmi.updateBMI();
+               bmi.updateBMI(db.getAuthenticatedUser(userInputUsername, userInputPassword));
                 break;
             case "2":
                 tp.modifySchedule();

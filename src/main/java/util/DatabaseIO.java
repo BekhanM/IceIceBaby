@@ -10,17 +10,24 @@ public class DatabaseIO {
     static final String DB_URL = "jdbc:mysql://localhost/broscience";
     //  Database credentials
     static final String USER = "root";
-    static final String PASS = "Heisenberg2001!";
-    String username1;
-    String password1;
-    User user = new User("pølsefar","pølsefar1234",182.0,81.0,22,"female");
+    static final String PASS = "NieMeyerRull2";
+    String username;
+    String puffPass;
+    double height;
+    double weight;
+    int age;
+    String gender;
+
+
+    User user;
     TextUI ui = new TextUI();
     Datavalidator dv = new Datavalidator();
     int userChoice = 0;
     String mediaContentName;
-    BMI bmi = new BMI();
+
 
     public void addUser() {
+        BMI bmi = new BMI();
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -95,8 +102,12 @@ public class DatabaseIO {
 
 
     public User getAuthenticatedUser(String username, String puffPass) {
+        BMI bmi = new BMI();
         Connection conn = null;
         PreparedStatement stmt = null;
+
+        this.username =username;
+        this.puffPass = puffPass;
 
         user = null;
         try {
@@ -107,7 +118,7 @@ public class DatabaseIO {
             System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-            String sql = "SELECT username, password FROM USER WHERE username = ? AND password = ? ";
+            String sql = "SELECT username, password, height, weight FROM USER WHERE username = ? AND password = ? ";
             stmt = conn.prepareStatement(sql);
 
             stmt.setString(1, username);
@@ -116,10 +127,15 @@ public class DatabaseIO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                user = new User(username, puffPass,182.0,81.0,22,"female");
+
+                double retrievedHeight = rs.getDouble("height");
+                double retrievedWeight = rs.getDouble("weight");
+
+                user = new User(username, puffPass,retrievedHeight,retrievedWeight,age,gender,bmi);
                 ui.displayMessage("Nice dude, username/password passer!");
                 ui.displayMessage("Velkommen, " + username + " the GOAT!");
                 ui.displayMessage("Ser stærk ud i dag, " + username + "!");
+
             } else {
                 ui.displayMessage("Brugernavn findes ikke, ellers kan du ikke stave, dumbass.");
             }
@@ -356,6 +372,40 @@ public class DatabaseIO {
                 ui.displayMessage("Brugeren er fjernet");
             } else {
                 ui.displayMessage("Mislykkedes at fjerne brugeren");
+            }
+
+            stmt.close();
+            conn.close();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    public void saveToDatabase(double newBMI, String username) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        this.username = username;
+
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            // Update query with parameters
+            String sql = "UPDATE `broscience`.`user` SET `bmi` = ? WHERE `username` = ?";
+            stmt = conn.prepareStatement(sql);
+
+            // Set the parameters
+            stmt.setDouble(1, newBMI);
+            stmt.setString(2, username);
+
+            // Execute the update
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                ui.displayMessage("BMI updated successfully!");
+            } else {
+                ui.displayMessage("Failed to update BMI");
             }
 
             stmt.close();
