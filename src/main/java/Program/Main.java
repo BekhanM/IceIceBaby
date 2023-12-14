@@ -20,6 +20,11 @@ public class Main {
         TrainingProgram proBro = new TrainingProgram();
         DatabaseIO db = new DatabaseIO();
 
+
+
+       // bmi.updateBMI(user);
         bro.startMenu();
+        //proBro.displayExercises();
+
     }
 }

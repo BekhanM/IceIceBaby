@@ -10,7 +10,7 @@ public class DatabaseIO {
     static final String DB_URL = "jdbc:mysql://localhost/broscience";
     //  Database credentials
     static final String USER = "root";
-    static final String PASS = "Heisenberg2001!";
+    static final String PASS = "NieMeyerRull2";
     String username;
     String puffPass;
     double height;
@@ -117,7 +117,7 @@ public class DatabaseIO {
             System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-            String sql = "SELECT username, password, height, weight FROM USER WHERE username = ? AND password = ? ";
+            String sql = "SELECT userID,username, password, height, weight FROM USER WHERE username = ? AND password = ? ";
             stmt = conn.prepareStatement(sql);
 
             stmt.setString(1, username);
@@ -129,8 +129,8 @@ public class DatabaseIO {
 
                 double retrievedHeight = rs.getDouble("height");
                 double retrievedWeight = rs.getDouble("weight");
-
-                user = new User(username, puffPass, retrievedHeight, retrievedWeight, age, gender, bmi);
+                int retrievedUserID = rs.getInt("userID");
+                user = new User(retrievedUserID,username, puffPass, retrievedHeight, retrievedWeight, age, gender, bmi);
 
             } else {
                 ui.displayMessage("Brugernavn findes ikke, ellers kan du ikke stave, dumbass.");
