@@ -61,7 +61,7 @@ public class BroScience {
                 //logout();
                 break;
             case "7":
-                tp.addDay();
+                db.addDay(db.getAuthenticatedUser(userInputUsername,userInputPassword));
                 break;
             default:
                 ui.displayMessage("Sværger du en idiot skriv et af tallene din mongol");

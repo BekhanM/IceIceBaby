@@ -10,15 +10,13 @@ public class DatabaseIO {
     static final String DB_URL = "jdbc:mysql://localhost/broscience";
     //  Database credentials
     static final String USER = "root";
-    static final String PASS = "NieMeyerRull2";
+    static final String PASS = "Heisenberg2001!";
     String username;
     String puffPass;
     double height;
     double weight;
     int age;
     String gender;
-
-
     User user;
     TextUI ui = new TextUI();
     Datavalidator dv = new Datavalidator();
@@ -41,8 +39,8 @@ public class DatabaseIO {
             if (!checkUsername(username)) {
                 String password = ui.getInput("indtast din kodeord");
                 if (dv.validatePassword(password) == true) {
-                    double height = Double.parseDouble(ui.getInput("Indtast din højde"));
-                    double weight = Double.parseDouble(ui.getInput("Indtast din vægt"));
+                    double height = Double.parseDouble(ui.getInput("Indtast din højde i meter. Eks: 1.85"));
+                    double weight = Double.parseDouble(ui.getInput("Indtast din vægt i kg. Eks: 75.3"));
                     int age = Integer.parseInt(ui.getInput("Indtast din alder flinke"));
                     String gender = ui.getInput("Er du mand,kone eller noget andet?");
                     double userBMI = bmi.bmiCalculator(height, weight, age);
@@ -520,6 +518,41 @@ public class DatabaseIO {
             }
         }
         return false;
+    }
+
+    public void addDay(User user){
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        int user1 = user.getUserID();
+
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql = "INSERT INTO WORKOUT (day,userID) VALUES (?,?);";
+            stmt = conn.prepareStatement(sql);
+
+            //hygg í databaseio frá linju 116 - 126
+            String day = ui.getInput("Indtast hvad dag du vil tilføje ");
+
+            stmt.setString(1, day);
+            stmt.setInt(2,getUserIDFromDatabase(username, puffPass));
+
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                ui.displayMessage("dagen er tilføjet.");
+            } else {
+                ui.displayMessage("Mislykkes at gemme dagen");
+            }
+
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
