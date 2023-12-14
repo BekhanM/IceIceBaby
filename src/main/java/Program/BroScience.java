@@ -38,7 +38,8 @@ public class BroScience {
                 "\n4) Se dit træningsporgram" +
                 "\n5) Tilføj mad du har spist" +
                 "\n6) Logout"+
-                "\n7) Tilføj dagen du har spist");
+                "\n7) Tilføj dag"+
+                "\n8) test button");
 
         switch (i) {
             case "1":
@@ -62,6 +63,9 @@ public class BroScience {
                 break;
             case "7":
                 db.addDay(db.getAuthenticatedUser(userInputUsername,userInputPassword));
+                break;
+            case "8":
+                db.displayDays();
                 break;
             default:
                 ui.displayMessage("Sværger du en idiot skriv et af tallene din mongol");

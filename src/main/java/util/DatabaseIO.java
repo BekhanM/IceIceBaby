@@ -1,6 +1,7 @@
 package util;
 
 import model.BMI;
+import model.TrainingProgram;
 import model.User;
 
 import java.sql.*;
@@ -10,7 +11,7 @@ public class DatabaseIO {
     static final String DB_URL = "jdbc:mysql://localhost/broscience";
     //  Database credentials
     static final String USER = "root";
-    static final String PASS = "Heisenberg2001!";
+    static final String PASS = "NieMeyerRull2";
     String username;
     String puffPass;
     double height;
@@ -22,7 +23,7 @@ public class DatabaseIO {
     Datavalidator dv = new Datavalidator();
     int userChoice = 0;
     String mediaContentName;
-
+    TrainingProgram tp = new TrainingProgram();
 
     public void addUser() {
         BMI bmi = new BMI();
@@ -520,6 +521,8 @@ public class DatabaseIO {
         return false;
     }
 
+
+    //--------------------------------"Training program" ---------------------------------//
     public void addDay(User user){
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -554,6 +557,187 @@ public class DatabaseIO {
             e.printStackTrace();
         }
     }
+    public void displayProgram(){
 
+        String userID = String.valueOf(getUserIDFromDatabase(username,puffPass));
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql = "SELECT  we.SETS, we.REPS, w.day, e.name " +
+                    "FROM broscience.workoutexercise we " +
+                    "JOIN broscience.workout w ON we.workoutID = w.workoutID " +
+                    "JOIN broscience.exercises e ON we.EXERCISEID = e.EXERCISEID " +
+                    "WHERE we.userID = ?";
+
+
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, userID);
+
+
+            ResultSet rs = stmt.executeQuery();
+
+            //hví er tad tveir????
+            while (rs.next()) {
+
+
+                while (rs.next()) {
+
+
+                    String sets1 = rs.getString("SETS");
+                    String reps1 = rs.getString("REPS");
+                    String day = rs.getString("day");
+                    String exerciseName = rs.getString("name");
+
+                    String formatString = "day:  %-5s sets: %-5s reps %-10s exercise: %s";
+
+
+                    String formattedOutput = String.format(formatString, day, sets1, reps1, exerciseName);
+
+                    System.out.println(formattedOutput);
+                }
+
+
+
+
+            }
+
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            //Handle errors for JDBC
+            se.printStackTrace();
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        } finally {
+
+            try {
+                if (stmt != null) stmt.close();
+            } catch (SQLException se2) {
+            }
+            try {
+                if (conn != null) conn.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
+
+
+    }
+
+
+
+        public void addDayToProgram(){
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            String userID = String.valueOf(getUserIDFromDatabase(username,puffPass));
+
+
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+                displayDays();
+                String workoutID = ui.getInput("Hvilken dag vil du indsætte øvelsen i? "+" tast som nummer");
+
+                tp.displayExercises();
+                String exerciseID = ui.getInput("Hvilken øvelse vil du tilføje til den dag? husk at taste sum nummer");
+
+                String sets = ui.getInput("Hvor mange sets?");
+                String reps = ui.getInput("Hvor mange reps?");
+
+                String sql = "INSERT INTO WORKOUTEXERCISE (USERID, WORKOUTID, EXERCISEID, SETS, REPS) VALUES (?, ?, ?, ?, ?)";
+                stmt = conn.prepareStatement(sql);
+
+                stmt.setString(1, userID);
+                stmt.setString(2,workoutID);
+                stmt.setInt(3, Integer.parseInt(exerciseID));
+                stmt.setInt(4, Integer.parseInt(sets));
+                stmt.setInt(5, Integer.parseInt(reps));
+                int rowsAffected = stmt.executeUpdate();
+                if (rowsAffected > 0) {
+                    ui.displayMessage("Det gik... denne gang");
+                } else {
+                    ui.displayMessage("Mislykkedes");
+                }
+
+                stmt.close();
+                conn.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+        public void displayDays(){
+        /* vit skulu hava workout relativt til current user
+
+       1 tad kunnu vit gera vid at brúka getUserID
+
+       2 so siga vit search database vid har userID er tad sama sum current user
+
+       3 og taka fatur í allir workoutID har userID == sum current userid
+         */
+            String userID = String.valueOf(getUserIDFromDatabase(username,puffPass));
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+
+                conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+                String sql = "SELECT workoutID, day FROM broscience.workout WHERE userID = (?) ";
+
+                stmt = conn.prepareStatement(sql);
+                stmt.setString(1, userID);
+
+
+                ResultSet rs = stmt.executeQuery();
+
+                while (rs.next()) {
+                    //Retrieve by column name
+
+                    String workoutID1 = rs.getString("workoutID");
+                    String day1 = rs.getString("day");
+
+                    String formatString = "workoutID: %-10sday: %-12.5s";
+                    String formattedOutput = String.format(formatString, workoutID1, day1);
+                    System.out.println(formattedOutput);
+
+
+                }
+
+                rs.close();
+                stmt.close();
+                conn.close();
+            } catch (SQLException se) {
+                //Handle errors for JDBC
+                se.printStackTrace();
+            } catch (Exception e) {
+
+                e.printStackTrace();
+            } finally {
+
+                try {
+                    if (stmt != null) stmt.close();
+                } catch (SQLException se2) {
+                }
+                try {
+                    if (conn != null) conn.close();
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                }
+            }
+
+
+        }
 
 }
