@@ -2,6 +2,7 @@ package model;
 
 public class User {
 
+    int userID;
     private String username;
     private String password;
     private double height;
@@ -10,7 +11,8 @@ public class User {
     private String gender;
     private BMI bmi;
 
-    public User(String username, String password, double height, double weight, int age, String gender,BMI bmi) {
+
+    public User(int userID, String username, String password, double height, double weight, int age, String gender, BMI bmi) {
         this.username = username;
         this.password = password;
         this.height = height;
@@ -18,8 +20,12 @@ public class User {
         this.age = age;
         this.gender = gender;
         this.bmi = bmi;
+        this.userID = userID;
     }
 
+    public int getUserID() {
+        return userID;
+    }
     public String getUsername() {
         return username;
     }
@@ -44,7 +50,7 @@ public class User {
     }
     @Override
     public String toString() {
-        return "Username: " + username + "\nPassword: " + password + "\nHeight: " + height + "\nWeight: " + weight + "\nAge: " + age + "\nGender: " + gender;
+        return "Username: " + username + "\nPassword: " + password + "\nHeight: " + height + "\nWeight: " + weight + "\nAge: " + age + "\nGender: " + gender+ "\nBMI: "+bmi ;
     }
 
 

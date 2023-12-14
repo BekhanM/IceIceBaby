@@ -3,6 +3,7 @@ package model;
 import util.DatabaseIO;
 
 public class Nutrition {
+    int userID;
     String username;
     String password;
     double height;
@@ -11,7 +12,7 @@ public class Nutrition {
     String gender;
     BMI bmi = new BMI();
     BMI yourBMI = new BMI();
-    User user = new User(username,password,height,weight,age,gender,yourBMI);
+    User user = new User(userID,username,password,height,weight,age,gender,yourBMI);
     DatabaseIO db = new DatabaseIO();
 
     public void addNutrition() {

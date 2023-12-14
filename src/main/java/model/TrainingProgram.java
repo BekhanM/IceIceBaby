@@ -12,8 +12,15 @@ public class TrainingProgram {
     static final String USER = "root";
     static final String PASS = "NieMeyerRull2";
     //-------------------------------------------------------------------------
-
-
+    int userID;
+    String username;
+    String password;
+    double height;
+    double weight;
+    int age;
+    String gender;
+    BMI bmi;
+    User user = new User(userID,username,password,height,weight,age,gender,bmi);
     TextUI ui = new TextUI();
     ArrayList<Exercises> exercises;
     Exercises BenchPress = new Exercises("Bench Press",20,12);
@@ -155,6 +162,40 @@ public class TrainingProgram {
                 ui.displayMessage(name+" er tilføjet");
             } else {
                 ui.displayMessage("Mislykkes at gemme");
+            }
+
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void addDay(){
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        int user1 = user.getUserID();
+
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql = "INSERT INTO WORKOUT (day,userID) VALUES (?,?);";
+            stmt = conn.prepareStatement(sql);
+
+            //hygg í databaseio frá linju 116 - 126
+            String day = ui.getInput("Indtast hvad dag du vil tilføje ");
+
+            stmt.setString(1, day);
+            stmt.setInt(2,user1);
+
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                ui.displayMessage("dagen er tilføjet.");
+            } else {
+                ui.displayMessage("Mislykkes at gemme dagen");
             }
 
             stmt.close();

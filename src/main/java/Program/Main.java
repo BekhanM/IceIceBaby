@@ -15,7 +15,7 @@ public class Main {
 
     public static void main(String[] args) {
         BMI bmi  = new BMI();
-        User user = new User("dfdfd","asfasfafs",1.90,100,23,"other",bmi);
+        //User user = new User("dfdfd","asfasfafs",1.90,100,23,"other",bmi);
         BroScience bro = new BroScience();
         TrainingProgram proBro = new TrainingProgram();
         DatabaseIO db = new DatabaseIO();
@@ -24,7 +24,7 @@ public class Main {
 
        // bmi.updateBMI(user);
         bro.startMenu();
-        //proBro.displayExercises();
+       // proBro.addExerciseToDatabase();
 
     }
 }

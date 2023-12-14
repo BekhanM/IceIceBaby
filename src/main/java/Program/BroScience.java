@@ -37,8 +37,8 @@ public class BroScience {
                 "\n3) Tilføj mad til databasen" +
                 "\n4) Se dit træningsporgram" +
                 "\n5) Tilføj mad du har spist" +
-                "\n6) Logout");
-
+                "\n6) Logout"+
+                "\n7) Tilføj dagen du har spist");
 
         switch (i) {
             case "1":
@@ -58,6 +58,9 @@ public class BroScience {
                 break;
             case "6":
                 //logout();
+                break;
+            case "7":
+                tp.addDay();
                 break;
             default:
                 ui.displayMessage("Sværger du en idiot skriv et af tallene din mongol");
