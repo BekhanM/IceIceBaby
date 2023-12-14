@@ -1,5 +1,6 @@
 package model;
 
+import util.DatabaseIO;
 import util.TextUI;
 
 import java.sql.*;
@@ -10,14 +11,22 @@ public class TrainingProgram {
     static final String DB_URL = "jdbc:mysql://localhost/broscience";
     //  Database credentials
     static final String USER = "root";
-    static final String PASS = "NieMeyerRull2";
+    static final String PASS = "Heisenberg2001!";
     //-------------------------------------------------------------------------
-
-
+    int userID;
+    String username;
+    String password;
+    double height;
+    double weight;
+    int age;
+    String gender;
+    BMI bmi;
+    User user = new User(userID, username, password, height, weight, age, gender, bmi);
     TextUI ui = new TextUI();
     ArrayList<Exercises> exercises;
-    Exercises BenchPress = new Exercises("Bench Press",20,12);
+    Exercises BenchPress = new Exercises("Bench Press", 20, 12);
     ArrayList<String> schedule;
+    DatabaseIO db = new DatabaseIO();
     private int rest;
 
     public void displayExercises() {
@@ -48,7 +57,7 @@ public class TrainingProgram {
                 String focusGroup = rs.getString("focusGroup");
 
                 String formatString = "Name: %-45sfocusGroup: %-12.2s";
-                String formattedOutput = String.format(formatString, name,focusGroup);
+                String formattedOutput = String.format(formatString, name, focusGroup);
                 System.out.println(formattedOutput);
 
             }
@@ -83,40 +92,29 @@ public class TrainingProgram {
     public int intensity() { // Dummy tal lidt for hardcoded
         int intensity = 0;
         int caloriesBurned = 0;
-        if(intensity == 1) {
+        if (intensity == 1) {
             return caloriesBurned = 100;
-        }
-        else if(intensity == 2) {
+        } else if (intensity == 2) {
             return caloriesBurned = 125;
-        }
-        else if(intensity == 3) {
+        } else if (intensity == 3) {
             return caloriesBurned = 150;
-        }
-        else if(intensity == 3) {
+        } else if (intensity == 3) {
             return caloriesBurned = 175;
-        }
-        else if(intensity == 4) {
+        } else if (intensity == 4) {
             return caloriesBurned = 200;
-        }
-        else if(intensity == 5) {
+        } else if (intensity == 5) {
             return caloriesBurned = 225;
-        }
-        else if(intensity == 6) {
+        } else if (intensity == 6) {
             return caloriesBurned = 250;
-        }
-        else if(intensity == 7) {
+        } else if (intensity == 7) {
             return caloriesBurned = 275;
-        }
-        else if(intensity == 8) {
+        } else if (intensity == 8) {
             return caloriesBurned = 300;
-        }
-        else if(intensity == 9) {
+        } else if (intensity == 9) {
             return caloriesBurned = 325;
-        }
-        else if(intensity == 10) {
+        } else if (intensity == 10) {
             return caloriesBurned = 350;
-        }
-        else {
+        } else {
             ui.displayMessage("Invalid number");
         }
         return 0;
@@ -125,16 +123,18 @@ public class TrainingProgram {
     public void trainingTemplate() {
 
     }
+
     public void addExercise(ArrayList<Exercises> exercise) {
 
     }
+
     public void modifySchedule() {
 
     }
+
     public void addExerciseToDatabase() {
         Connection conn = null;
         PreparedStatement stmt = null;
-
 
 
         try {
@@ -152,7 +152,7 @@ public class TrainingProgram {
 
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
-                ui.displayMessage(name+" er tilføjet");
+                ui.displayMessage(name + " er tilføjet");
             } else {
                 ui.displayMessage("Mislykkes at gemme");
             }
@@ -165,5 +165,6 @@ public class TrainingProgram {
             e.printStackTrace();
         }
     }
+
 
 }

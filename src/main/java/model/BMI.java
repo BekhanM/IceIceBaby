@@ -8,6 +8,7 @@ import java.text.DecimalFormat;
 
 public class BMI {
     DatabaseIO db = new DatabaseIO();
+    int userID;
     String username;
     String password;
     double targetWeight;
@@ -17,7 +18,7 @@ public class BMI {
     double bmi;
     BMI bmi1;
     String gender;
-    User user = new User(username, password, height, weight, age, gender, bmi1);
+    User user = new User(userID,username, password, height, weight, age, gender, bmi1);
 
 
     TextUI ui = new TextUI();

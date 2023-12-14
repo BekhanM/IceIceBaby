@@ -10,15 +10,13 @@ public class DatabaseIO {
     static final String DB_URL = "jdbc:mysql://localhost/broscience";
     //  Database credentials
     static final String USER = "root";
-    static final String PASS = "Fuckdig79";
+    static final String PASS = "Heisenberg2001!";
     String username;
     String puffPass;
     double height;
     double weight;
     int age;
     String gender;
-
-
     User user;
     TextUI ui = new TextUI();
     Datavalidator dv = new Datavalidator();
@@ -41,8 +39,8 @@ public class DatabaseIO {
             if (!checkUsername(username)) {
                 String password = ui.getInput("indtast din kodeord");
                 if (dv.validatePassword(password) == true) {
-                    double height = Double.parseDouble(ui.getInput("Indtast din højde"));
-                    double weight = Double.parseDouble(ui.getInput("Indtast din vægt"));
+                    double height = Double.parseDouble(ui.getInput("Indtast din højde i meter. Eks: 1.85"));
+                    double weight = Double.parseDouble(ui.getInput("Indtast din vægt i kg. Eks: 75.3"));
                     int age = Integer.parseInt(ui.getInput("Indtast din alder flinke"));
                     String gender = ui.getInput("Er du mand,kone eller noget andet?");
                     double userBMI = bmi.bmiCalculator(height, weight, age);
@@ -82,7 +80,7 @@ public class DatabaseIO {
 
 
     private boolean checkUsername(String username) throws SQLException {
-        try(Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)){
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
             String query = "SELECT COUNT(*) FROM USER WHERE Username = ?";
             try (PreparedStatement statement = conn.prepareStatement(query)) {
                 statement.setString(1, username);
@@ -98,7 +96,6 @@ public class DatabaseIO {
         }
         return false;
     }
-
 
 
     public User getAuthenticatedUser(String username, String puffPass) {
@@ -118,7 +115,7 @@ public class DatabaseIO {
             System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-            String sql = "SELECT username, password, height, weight FROM USER WHERE username = ? AND password = ? ";
+            String sql = "SELECT userID,username, password, height, weight FROM USER WHERE username = ? AND password = ? ";
             stmt = conn.prepareStatement(sql);
 
             stmt.setString(1, username);
@@ -130,11 +127,8 @@ public class DatabaseIO {
 
                 double retrievedHeight = rs.getDouble("height");
                 double retrievedWeight = rs.getDouble("weight");
-
-                user = new User(username, puffPass,retrievedHeight,retrievedWeight,age,gender,bmi);
-                ui.displayMessage("Nice dude, username/password passer!");
-                ui.displayMessage("Velkommen, " + username + " the GOAT!");
-                ui.displayMessage("Ser stærk ud i dag, " + username + "!");
+                int retrievedUserID = rs.getInt("userID");
+                user = new User(retrievedUserID,username, puffPass, retrievedHeight, retrievedWeight, age, gender, bmi);
 
             } else {
                 ui.displayMessage("Brugernavn findes ikke, ellers kan du ikke stave, dumbass.");
@@ -174,7 +168,7 @@ public class DatabaseIO {
 
                 String name = rs.getString("Name");
                 double caloriesPr100 = rs.getDouble("caloriesPr100");
-                double proteinPr100= rs.getDouble("proteinPr100");
+                double proteinPr100 = rs.getDouble("proteinPr100");
 
                 String formatString = "Name: %-45sCalories: %-12.2fProtein: %-5.2f";
                 String formattedOutput = String.format(formatString, name, caloriesPr100, proteinPr100);
@@ -321,7 +315,6 @@ public class DatabaseIO {
         PreparedStatement stmt = null;
 
 
-
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -335,7 +328,7 @@ public class DatabaseIO {
             double protein = Double.parseDouble(ui.getInput("Skriv protein per 100g"));
             stmt.setString(1, name);
             stmt.setDouble(2, calories);
-            stmt.setDouble(3,protein);
+            stmt.setDouble(3, protein);
 
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
@@ -352,7 +345,6 @@ public class DatabaseIO {
             e.printStackTrace();
         }
     }
-
 
 
     public void removeUserData(String newName, String newPassword) {
@@ -443,7 +435,6 @@ public class DatabaseIO {
                 ui.displayMessage("Food intake added successfully.");
 
                 // Update user's total calories and protein intake
-                updateTotalIntake(conn, user);
             } else {
                 ui.displayMessage("Failed to add food intake.");
             }
@@ -490,35 +481,8 @@ public class DatabaseIO {
         return userID;
     }
 
-    public void updateTotalIntake(Connection conn, User user) throws SQLException {
-        String updateSql = "UPDATE user SET totalCalories = (SELECT SUM(caloriesPr100) FROM nutritionintake "
-                + "JOIN nutrition ON nutritionintake.foodID = nutrition.foodID "
-                + "WHERE nutritionintake.userID = ?), "
-                + "totalProtein = (SELECT SUM(proteinPr100) FROM nutritionintake "
-                + "JOIN nutrition ON nutritionintake.foodID = nutrition.foodID "
-                + "WHERE nutritionintake.userID = ?) "
-                + "WHERE userID = ?";
-
-        try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
-            updateStmt.setInt(1, getUserIDFromDatabase(username,puffPass));
-            updateStmt.setInt(2, getUserIDFromDatabase(username,puffPass));
-            updateStmt.setInt(3, getUserIDFromDatabase(username,puffPass));
-
-            int rowsUpdated = updateStmt.executeUpdate();
-
-            if (rowsUpdated > 0) {
-                ui.displayMessage("User's total intake updated successfully.");
-            } else {
-                ui.displayMessage("Failed to update user's total intake.");
-            }
-        }
-    }
-
 
     private int searchAndSelectFood(Connection conn) throws SQLException {
-        // Display available foods
-        searchFood();
-
         // Allow user to select a food
         int selectedFoodID = -1;
         boolean validSelection = false;
@@ -554,6 +518,41 @@ public class DatabaseIO {
             }
         }
         return false;
+    }
+
+    public void addDay(User user){
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        int user1 = user.getUserID();
+
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql = "INSERT INTO WORKOUT (day,userID) VALUES (?,?);";
+            stmt = conn.prepareStatement(sql);
+
+            //hygg í databaseio frá linju 116 - 126
+            String day = ui.getInput("Indtast hvad dag du vil tilføje ");
+
+            stmt.setString(1, day);
+            stmt.setInt(2,getUserIDFromDatabase(username, puffPass));
+
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                ui.displayMessage("dagen er tilføjet.");
+            } else {
+                ui.displayMessage("Mislykkes at gemme dagen");
+            }
+
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
