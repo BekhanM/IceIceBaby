@@ -437,7 +437,6 @@ public class DatabaseIO {
                 ui.displayMessage("Food intake added successfully.");
 
                 // Update user's total calories and protein intake
-                updateTotalIntake(conn, user);
             } else {
                 ui.displayMessage("Failed to add food intake.");
             }
@@ -484,35 +483,8 @@ public class DatabaseIO {
         return userID;
     }
 
-    public void updateTotalIntake(Connection conn, User user) throws SQLException {
-        String updateSql = "UPDATE user SET totalCalories = (SELECT SUM(caloriesPr100) FROM nutritionintake "
-                + "JOIN nutrition ON nutritionintake.foodID = nutrition.foodID "
-                + "WHERE nutritionintake.userID = ?), "
-                + "totalProtein = (SELECT SUM(proteinPr100) FROM nutritionintake "
-                + "JOIN nutrition ON nutritionintake.foodID = nutrition.foodID "
-                + "WHERE nutritionintake.userID = ?) "
-                + "WHERE userID = ?";
-
-        try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
-            updateStmt.setInt(1, getUserIDFromDatabase(username,puffPass));
-            updateStmt.setInt(2, getUserIDFromDatabase(username,puffPass));
-            updateStmt.setInt(3, getUserIDFromDatabase(username,puffPass));
-
-            int rowsUpdated = updateStmt.executeUpdate();
-
-            if (rowsUpdated > 0) {
-                ui.displayMessage("User's total intake updated successfully.");
-            } else {
-                ui.displayMessage("Failed to update user's total intake.");
-            }
-        }
-    }
-
 
     private int searchAndSelectFood(Connection conn) throws SQLException {
-        // Display available foods
-        searchFood();
-
         // Allow user to select a food
         int selectedFoodID = -1;
         boolean validSelection = false;
