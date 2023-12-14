@@ -42,10 +42,12 @@ public class User {
     public BMI getBMI(){
         return bmi;
     }
+
     @Override
     public String toString() {
         return "Username: " + username + "\nPassword: " + password + "\nHeight: " + height + "\nWeight: " + weight + "\nAge: " + age + "\nGender: " + gender;
     }
+
 
 
 

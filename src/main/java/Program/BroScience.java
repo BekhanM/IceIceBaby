@@ -54,7 +54,8 @@ public class BroScience {
             case "4":
                 tp.trainingTemplate();
             case "5":
-
+                db.searchFood();
+                db.addFoodIntake(db.getAuthenticatedUser(userInputUsername,userInputPassword));
                 break;
             case "6":
                 //logout();
