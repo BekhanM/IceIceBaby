@@ -278,11 +278,12 @@ public class DatabaseIO {
             //STEP 4: Extract data from result set
             while (rs.next()) {
                 //Retrieve by column name
+                Integer foodID = rs.getInt("foodID");
                 String name = rs.getString("Name");
                 double caloriesPr100 = rs.getDouble("CaloriesPr100");
                 double proteinPr100 = rs.getDouble("proteinpr100");
 
-                String searchForFood = "\nName: " + name + "\nCalories: " + caloriesPr100 + "\nProtein: " + proteinPr100;
+                String searchForFood = "\nFoodID: " + foodID + "\nName: " + name + "\nCalories (100 g.): " + caloriesPr100 + " Cal.\nProtein (100 g.): " + proteinPr100 + " g.";
 
                 System.out.println(searchForFood);
             }
@@ -376,7 +377,7 @@ public class DatabaseIO {
         }
     }
 
-    public void saveToDatabase(double newBMI, double newWeight, String username) {
+    public void updateBmiDatabase(double newBMI, double newWeight, String username) {
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -410,6 +411,143 @@ public class DatabaseIO {
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public void addFoodIntake(User user) {
+        Connection conn = null;
+        PreparedStatement insertStmt = null;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            // Allow user to search for and select food
+            int selectedFoodID = searchAndSelectFood(conn);
+
+            // Insert the selected food into nutritionintake table
+            String insertSql = "INSERT INTO nutritionintake (userID, foodID) VALUES (?, ?)";
+            insertStmt = conn.prepareStatement(insertSql);
+
+            insertStmt.setInt(1, getUserIDFromDatabase(username,puffPass));
+            insertStmt.setInt(2, selectedFoodID);
+
+            int rowsInserted = insertStmt.executeUpdate();
+
+            if (rowsInserted > 0) {
+                ui.displayMessage("Food intake added successfully.");
+
+                // Update user's total calories and protein intake
+                updateTotalIntake(conn, user);
+            } else {
+                ui.displayMessage("Failed to add food intake.");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (insertStmt != null) {
+                    insertStmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
+    }
+
+    public int getUserIDFromDatabase(String username, String password) {
+        int userID = -1;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql = "SELECT userID FROM user WHERE username = ? AND password = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, username);
+                stmt.setString(2, password);
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        userID = rs.getInt("userID");
+                    }
+                }
+            }
+
+            conn.close();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return userID;
+    }
+
+    public void updateTotalIntake(Connection conn, User user) throws SQLException {
+        String updateSql = "UPDATE user SET totalCalories = (SELECT SUM(caloriesPr100) FROM nutritionintake "
+                + "JOIN nutrition ON nutritionintake.foodID = nutrition.foodID "
+                + "WHERE nutritionintake.userID = ?), "
+                + "totalProtein = (SELECT SUM(proteinPr100) FROM nutritionintake "
+                + "JOIN nutrition ON nutritionintake.foodID = nutrition.foodID "
+                + "WHERE nutritionintake.userID = ?) "
+                + "WHERE userID = ?";
+
+        try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+            updateStmt.setInt(1, getUserIDFromDatabase(username,puffPass));
+            updateStmt.setInt(2, getUserIDFromDatabase(username,puffPass));
+            updateStmt.setInt(3, getUserIDFromDatabase(username,puffPass));
+
+            int rowsUpdated = updateStmt.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                ui.displayMessage("User's total intake updated successfully.");
+            } else {
+                ui.displayMessage("Failed to update user's total intake.");
+            }
+        }
+    }
+
+
+    private int searchAndSelectFood(Connection conn) throws SQLException {
+        // Display available foods
+        searchFood();
+
+        // Allow user to select a food
+        int selectedFoodID = -1;
+        boolean validSelection = false;
+        do {
+            String selectedFoodIDString = ui.getInput("Enter the ID of the food you want to add to your intake:");
+            try {
+                selectedFoodID = Integer.parseInt(selectedFoodIDString);
+                validSelection = true;
+            } catch (NumberFormatException e) {
+                ui.displayMessage("Invalid input. Please enter a valid food ID.");
+            }
+        } while (!validSelection);
+
+        // Validate that the selected food ID exists in the database
+        if (!validateFoodID(conn, selectedFoodID)) {
+            ui.displayMessage("Invalid food ID. Please select a valid food.");
+            // Recursively call the method to allow the user to select again
+            selectedFoodID = searchAndSelectFood(conn);
+        }
+
+        return selectedFoodID;
+    }
+
+    private boolean validateFoodID(Connection conn, int foodID) throws SQLException {
+        String query = "SELECT COUNT(*) FROM nutrition WHERE foodID = ?";
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setInt(1, foodID);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int count = resultSet.getInt(1);
+                    return count > 0;
+                }
+            }
+        }
+        return false;
     }
 
 
