@@ -6,9 +6,7 @@ import model.User;
 import java.sql.*;
 
 public class DatabaseIO {
-
     static final String DB_URL = "jdbc:mysql://localhost/broscience";
-    //  Database credentials
     static final String USER = "root";
     static final String PASS = "Heisenberg2001!";
     String username;
@@ -22,6 +20,7 @@ public class DatabaseIO {
     Datavalidator dv = new Datavalidator();
     int userChoice = 0;
     String mediaContentName;
+    private String selectedGramString;
 
 
     public void addUser() {
@@ -128,7 +127,7 @@ public class DatabaseIO {
                 double retrievedHeight = rs.getDouble("height");
                 double retrievedWeight = rs.getDouble("weight");
                 int retrievedUserID = rs.getInt("userID");
-                user = new User(retrievedUserID,username, puffPass, retrievedHeight, retrievedWeight, age, gender, bmi);
+                user = new User(retrievedUserID, username, puffPass, retrievedHeight, retrievedWeight, age, gender, bmi);
 
             } else {
                 ui.displayMessage("Brugernavn findes ikke, ellers kan du ikke stave, dumbass.");
@@ -411,48 +410,6 @@ public class DatabaseIO {
         }
     }
 
-    public void addFoodIntake(User user) {
-        Connection conn = null;
-        PreparedStatement insertStmt = null;
-
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
-            // Allow user to search for and select food
-            int selectedFoodID = searchAndSelectFood(conn);
-
-            // Insert the selected food into nutritionintake table
-            String insertSql = "INSERT INTO nutritionintake (userID, foodID) VALUES (?, ?)";
-            insertStmt = conn.prepareStatement(insertSql);
-
-            insertStmt.setInt(1, getUserIDFromDatabase(username,puffPass));
-            insertStmt.setInt(2, selectedFoodID);
-
-            int rowsInserted = insertStmt.executeUpdate();
-
-            if (rowsInserted > 0) {
-                ui.displayMessage("Food intake added successfully.");
-
-                // Update user's total calories and protein intake
-            } else {
-                ui.displayMessage("Failed to add food intake.");
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (insertStmt != null) {
-                    insertStmt.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException se) {
-                se.printStackTrace();
-            }
-        }
-    }
 
     public int getUserIDFromDatabase(String username, String password) {
         int userID = -1;
@@ -482,6 +439,143 @@ public class DatabaseIO {
     }
 
 
+    public void addFoodIntake(User user) {
+        Connection conn = null;
+        PreparedStatement insertStmt = null;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            // Allow user to search for and select food
+            int selectedFoodID = searchAndSelectFood(conn);
+
+            // Ask the user for the amount of grams they want to eat
+            double selectedGrams = -1;
+            boolean validGrams = false;
+            do {
+                String selectedGramsString = ui.getInput("Enter the amount of grams you want to eat:");
+                try {
+                    selectedGrams = Double.parseDouble(selectedGramsString);
+                    validGrams = true;
+                } catch (NumberFormatException e) {
+                    ui.displayMessage("Invalid input. Please enter a valid number for grams.");
+                }
+            } while (!validGrams);
+
+            // Retrieve the nutritional values from the database based on the selected foodID
+            double caloriesPer100g = getCaloriesPer100g(conn, selectedFoodID);
+            double proteinPer100g = getProteinPer100g(conn, selectedFoodID);
+
+            // Calculate the nutritional values based on the selected grams
+            double caloriesIntake = (selectedGrams / 100.0) * caloriesPer100g;
+            double proteinIntake = (selectedGrams / 100.0) * proteinPer100g;
+
+            ui.displayMessage("Nutritional values for " + selectedGrams + " grams of the selected food:");
+            ui.displayMessage("Calories: " + caloriesIntake + " kcal");
+            ui.displayMessage("Protein: " + proteinIntake + " grams");
+
+            // Insert the selected food into nutritionintake table
+            String insertSql = "INSERT INTO nutritionintake (userID, foodID, calories, protein, gram) VALUES (?, ?, ?, ?, ?)";
+            insertStmt = conn.prepareStatement(insertSql);
+
+            insertStmt.setInt(1, getUserIDFromDatabase(username, puffPass));
+            insertStmt.setInt(2, selectedFoodID);
+            insertStmt.setDouble(3, caloriesIntake);
+            insertStmt.setDouble(4, proteinIntake);
+            insertStmt.setDouble(5, selectedGrams);
+
+            int rowsInserted = insertStmt.executeUpdate();
+
+            if (rowsInserted > 0) {
+                ui.displayMessage("Food intake added successfully.");
+
+                // Update user's total calories and protein intake
+            } else {
+                ui.displayMessage("Failed to add food intake.");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (insertStmt != null) {
+                    insertStmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
+    }
+
+    public void displayFoodIntake(User user) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            //STEP 1: Register JDBC driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            //STEP 2: Open a connection
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            // Get the user's ID
+            int userID = user.getUserID();
+
+            //STEP 3: Execute a query
+            String sql = "SELECT n.name, ni.gram, ni.calories, ni.protein " +
+                    "FROM nutritionintake ni " +
+                    "JOIN nutrition n ON ni.foodID = n.foodID " +
+                    "WHERE ni.userID = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, userID);
+
+            ResultSet rs = stmt.executeQuery();
+
+            double totalCalories = 0.0;
+            double totalProtein = 0.0;
+
+            //STEP 4: Extract data from result set
+            while (rs.next()) {
+                String foodName = rs.getString("name");
+                double grams = rs.getDouble("gram");
+                double calories = rs.getDouble("calories");
+                double protein = rs.getDouble("protein");
+
+                String formatString = "Food: %-45sGrams: %-12.2fCalories: %-12.2fProtein: %-5.2f";
+                String formattedOutput = String.format(formatString, foodName, grams, calories, protein);
+                System.out.println(formattedOutput);
+
+                totalCalories += calories;
+                totalProtein += protein;
+
+                System.out.println("Total calories: " + totalCalories);
+                System.out.println("Total protein: " + totalProtein);
+            }
+
+            //STEP 5: Clean-up environment
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+            } catch (SQLException se2) {
+            }
+            try {
+                if (conn != null) conn.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
+    }
+
+
+
     private int searchAndSelectFood(Connection conn) throws SQLException {
         // Allow user to select a food
         int selectedFoodID = -1;
@@ -502,11 +596,48 @@ public class DatabaseIO {
             // Recursively call the method to allow the user to select again
             selectedFoodID = searchAndSelectFood(conn);
         }
-
         return selectedFoodID;
     }
 
-    private boolean validateFoodID(Connection conn, int foodID) throws SQLException {
+    // Helper method to retrieve calories per 100g from the database
+    public double getCaloriesPer100g(Connection conn, int foodID) throws SQLException {
+        double caloriesPer100g = 0.0;
+
+        // Replace the following placeholder SQL query with your actual query
+        String sql = "SELECT caloriesPr100 FROM nutrition WHERE foodID = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, foodID);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    caloriesPer100g = rs.getDouble("caloriesPr100");
+                }
+            }
+        }
+
+        return caloriesPer100g;
+    }
+
+    // Helper method to retrieve protein per 100g from the database
+    public double getProteinPer100g(Connection conn, int foodID) throws SQLException {
+        double proteinPer100g = 0.0;
+
+        // Replace the following placeholder SQL query with your actual query
+        String sql = "SELECT proteinPr100 FROM nutrition WHERE foodID = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, foodID);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    proteinPer100g = rs.getDouble("proteinPr100");
+                }
+            }
+        }
+
+        return proteinPer100g;
+    }
+
+
+
+    public boolean validateFoodID(Connection conn, int foodID) throws SQLException {
         String query = "SELECT COUNT(*) FROM nutrition WHERE foodID = ?";
         try (PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setInt(1, foodID);
@@ -520,7 +651,7 @@ public class DatabaseIO {
         return false;
     }
 
-    public void addDay(User user){
+    public void addDay(User user) {
         Connection conn = null;
         PreparedStatement stmt = null;
         int user1 = user.getUserID();
@@ -537,7 +668,7 @@ public class DatabaseIO {
             String day = ui.getInput("Indtast hvad dag du vil tilføje ");
 
             stmt.setString(1, day);
-            stmt.setInt(2,getUserIDFromDatabase(username, puffPass));
+            stmt.setInt(2, getUserIDFromDatabase(username, puffPass));
 
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {

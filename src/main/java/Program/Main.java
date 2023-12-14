@@ -23,8 +23,10 @@ public class Main {
 
 
        // bmi.updateBMI(user);
+
         bro.startMenu();
         //proBro.displayExercises();
+       // db.displayFoodIntake();
 
     }
 }

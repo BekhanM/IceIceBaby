@@ -56,9 +56,10 @@ public class BroScience {
             case "5":
                 db.searchFood();
                 db.addFoodIntake(db.getAuthenticatedUser(userInputUsername,userInputPassword));
+                //db.selectFoodAndCalculateIntake();
                 break;
             case "6":
-                //logout();
+                db.displayFoodIntake(db.getAuthenticatedUser(userInputUsername,userInputPassword));
                 break;
             case "7":
                 db.addDay(db.getAuthenticatedUser(userInputUsername,userInputPassword));
