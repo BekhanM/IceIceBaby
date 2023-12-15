@@ -1,6 +1,5 @@
 package util;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Datavalidator {
@@ -73,5 +72,5 @@ public class Datavalidator {
             return validatePassword(password);
         }
     }
-    }
+}
 

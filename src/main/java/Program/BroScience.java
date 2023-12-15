@@ -11,15 +11,18 @@ public class BroScience {
     private final TextUI ui = new TextUI();
     DatabaseIO dbIO = new DatabaseIO();
     DatabaseIO db = new DatabaseIO();
+    Nutrition nutrition = new Nutrition();
     BMI bmi = new BMI();
     TrainingProgram tp = new TrainingProgram();
-    Nutrition nutrition = new Nutrition();
     private String userInputUsername;
     private String userInputPassword;
 
     public void startMenu() {
+
         ui.displayMessage("Velkommen til Bro Science, landets bedste app for bros der elsker gains!");
-        String i = ui.getInput("Hvad gør du her bro?\n1) Login\n2) Opret ny bruger");
+        String i = ui.getInput("Hvad gør du her bro?" +
+                "\n1) Login" +
+                "\n2) Opret ny bruger");
         if (i.equals("1")) {
             login();
         } else if (i.equals("2")) {
@@ -37,8 +40,8 @@ public class BroScience {
                 "\n3) Tilføj mad til databasen" +
                 "\n4) Se dit træningsporgram" +
                 "\n5) Tilføj mad du har spist" +
-                "\n6) Logout"+
-                "\n7) Tilføj dag"+
+                "\n6) Logout" +
+                "\n7) Tilføj dag" +
                 "\n8) test button");
 
         switch (i) {
@@ -56,14 +59,16 @@ public class BroScience {
                 tp.trainingTemplate();
             case "5":
                 db.searchFood();
-                db.addFoodIntake(db.getAuthenticatedUser(userInputUsername,userInputPassword));
+                db.addFoodIntake(db.getAuthenticatedUser(userInputUsername, userInputPassword));
                 //db.selectFoodAndCalculateIntake();
                 break;
             case "6":
-                db.displayFoodIntake(db.getAuthenticatedUser(userInputUsername,userInputPassword));
+                db.displayFoodIntake(db.getAuthenticatedUser(userInputUsername, userInputPassword));
+                nutrition.nutritionWish(db.getBMIFromDatabase(userInputUsername,userInputPassword), db.getGenderFromDatabase(userInputUsername,userInputPassword));
+
                 break;
             case "7":
-                db.addDay(db.getAuthenticatedUser(userInputUsername,userInputPassword));
+                db.addDay(db.getAuthenticatedUser(userInputUsername, userInputPassword));
                 break;
             case "8":
                 db.displayDays();
@@ -90,5 +95,4 @@ public class BroScience {
             login();
         }
     }
-
 }

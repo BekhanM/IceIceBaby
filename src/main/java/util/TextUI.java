@@ -1,7 +1,7 @@
 package util;
 
+import javax.swing.*;
 import java.util.Scanner;
-import javax.swing.JOptionPane;
 
 
 public class TextUI {
@@ -12,6 +12,6 @@ public class TextUI {
     }
 
     public void displayMessage(String msg) {
-        JOptionPane.showMessageDialog(null,msg);
+        JOptionPane.showMessageDialog(null, msg);
     }
 }
