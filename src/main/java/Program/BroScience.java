@@ -66,7 +66,7 @@ public class BroScience {
                 db.addDay(db.getAuthenticatedUser(userInputUsername,userInputPassword));
                 break;
             case "8":
-                db.displayDays();
+                db.displayPremadeProgram();
                 break;
             default:
                 ui.displayMessage("Sværger du en idiot skriv et af tallene din mongol");
