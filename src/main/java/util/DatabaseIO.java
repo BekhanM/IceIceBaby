@@ -11,7 +11,7 @@ public class DatabaseIO {
     static final String DB_URL = "jdbc:mysql://localhost/broscience";
     //  Database credentials
     static final String USER = "root";
-    static final String PASS = "Fuckdig79";
+    static final String PASS = "Heisenberg2001!";
     String username;
     String puffPass;
     int age;
@@ -730,10 +730,9 @@ public class DatabaseIO {
                     String day = rs.getString("day");
                     String exerciseName = rs.getString("name");
 
-                    String formatString = "day:  %-5s sets: %-5s reps %-10s exercise: %s";
+                    String formatString = "day: %-5s exercise: %-30s sets: %-5s reps: %s";
 
-
-                    String formattedOutput = String.format(formatString, day, sets1, reps1, exerciseName);
+                    String formattedOutput = String.format(formatString, day,exerciseName, sets1, reps1);
 
                     System.out.println(formattedOutput);
                 }
@@ -877,5 +876,69 @@ public class DatabaseIO {
 
 
         }
+
+    public void displayPremadeProgram(){
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            //STEP 1: Register JDBC driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            //STEP 2: Open a connection
+            //ui.displayMessage("Connecting to database...");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+
+            String sql = "SELECT tp.trainingprogramID, tp.day, e.name , tp.sets, tp.reps " +
+                    "FROM broscience.trainingprogram tp " +
+                    "JOIN broscience.exercises e ON tp.exerciseID = e.exerciseID";
+
+
+            stmt = conn.prepareStatement(sql);
+
+            ResultSet rs = stmt.executeQuery();
+
+            System.out.println("\n"+"----------------------------maintenance--------------------------"+"\n");
+            //STEP 4: Extract data from result set
+            while (rs.next()) {
+                //Retrieve by column name
+
+
+                int trainingprogramID = rs.getInt("trainingprogramID");
+                String day = rs.getString("day");
+                String exerciseName = rs.getString("name"); // Corrected to fetch exercise name from 'exercises' table
+                int sets = rs.getInt("sets");
+                int reps = rs.getInt("reps");
+
+                String formatString = "trainingprogramID: %-10s day: %-15s exerciseName: %-25s sets: %-5s reps: %-5s";
+                String formattedOutput = String.format(formatString, trainingprogramID, day, exerciseName, sets, reps);
+                System.out.println(formattedOutput);
+            }
+            //STEP 5: Clean-up environment
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            //Handle errors for JDBC
+            se.printStackTrace();
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        } finally {
+
+            try {
+                if (stmt != null) stmt.close();
+            } catch (SQLException se2) {
+            }
+            try {
+                if (conn != null) conn.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }//end finally try
+        }//end try
+
+
+
+    }
 
 }
