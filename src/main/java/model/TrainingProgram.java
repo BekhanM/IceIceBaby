@@ -11,7 +11,7 @@ public class TrainingProgram {
     static final String DB_URL = "jdbc:mysql://localhost/broscience";
     //  Database credentials
     static final String USER = "root";
-    static final String PASS = "Heisenberg2001!";
+    static final String PASS = "NieMeyerRull2";
     //-------------------------------------------------------------------------
     int userID;
     String username;
@@ -26,11 +26,10 @@ public class TrainingProgram {
     ArrayList<Exercises> exercises;
     Exercises BenchPress = new Exercises("Bench Press", 20, 12);
     ArrayList<String> schedule;
-    DatabaseIO db = new DatabaseIO();
     private int rest;
 
     public void displayExercises() {
-
+        DatabaseIO db = new DatabaseIO();
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -56,7 +55,7 @@ public class TrainingProgram {
                 String name = rs.getString("Name");
                 String focusGroup = rs.getString("focusGroup");
 
-                String formatString = "Name: %-45sfocusGroup: %-12.2s";
+                String formatString = "Name: %-45sfocusGroup: %-12.10s";
                 String formattedOutput = String.format(formatString, name, focusGroup);
                 System.out.println(formattedOutput);
 
@@ -133,6 +132,7 @@ public class TrainingProgram {
     }
 
     public void addExerciseToDatabase() {
+        DatabaseIO db = new DatabaseIO();
         Connection conn = null;
         PreparedStatement stmt = null;
 
