@@ -3,13 +3,13 @@ package model;
 public class User {
 
     int userID;
-    private String username;
-    private String password;
-    private double height;
-    private double weight;
-    private int age;
-    private String gender;
-    private BMI bmi;
+    private final String username;
+    private final String password;
+    private final double height;
+    private final double weight;
+    private final int age;
+    private final String gender;
+    private final BMI bmi;
 
 
     public User(int userID, String username, String password, double height, double weight, int age, String gender, BMI bmi) {

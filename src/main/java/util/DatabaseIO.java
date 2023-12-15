@@ -11,41 +11,44 @@ public class DatabaseIO {
     static final String DB_URL = "jdbc:mysql://localhost/broscience";
     //  Database credentials
     static final String USER = "root";
-    static final String PASS = "Heisenberg2001!";
+    static final String PASS = "Fuckdig79";
     String username;
     String puffPass;
-    double height;
-    double weight;
     int age;
     String gender;
     User user;
     TextUI ui = new TextUI();
     Datavalidator dv = new Datavalidator();
-    int userChoice = 0;
-    String mediaContentName;
     TrainingProgram tp = new TrainingProgram();
-    private String selectedGramString;
 
 
     public void addUser() {
         BMI bmi = new BMI();
-        Connection conn = null;
-        PreparedStatement stmt = null;
+        Connection conn;
+        PreparedStatement stmt;
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-            String username = ui.getInput("indtast din brugernavn smukke");
+            String username;
+            do {
+                username = ui.getInput("indtast din brugernavn smukke");
+                if(checkUsername(username)) {
+                    ui.displayMessage("Brugernavn eksisterer allerede, prøv igen");
+                }
+            } while (checkUsername(username));
 
-            // Check if the username already exists in the database
-            if (!checkUsername(username)) {
-                String password = ui.getInput("indtast din kodeord");
-                if (dv.validatePassword(password) == true) {
+            String password;
+            do {
+                password = ui.getInput("Indtast dit kodeord søde;)");
+            } while (!dv.validatePassword(password));
+
                     double height = Double.parseDouble(ui.getInput("Indtast din højde i meter. Eks: 1.85"));
                     double weight = Double.parseDouble(ui.getInput("Indtast din vægt i kg. Eks: 75.3"));
                     int age = Integer.parseInt(ui.getInput("Indtast din alder flinke"));
                     String gender = ui.getInput("Er du mand,kone eller noget andet?");
+
                     double userBMI = bmi.bmiCalculator(height, weight, age);
 
                     String sql = "INSERT INTO USER (username, password,height,weight,age,gender,bmi) VALUES (?, ? , ? , ? , ? , ? , ?)";
@@ -57,7 +60,7 @@ public class DatabaseIO {
                     stmt.setInt(5, age);
                     stmt.setString(6, gender);
                     stmt.setDouble(7, userBMI);
-                }
+
 
                 int rowsAffected = stmt.executeUpdate();
                 if (rowsAffected > 0) {
@@ -65,10 +68,6 @@ public class DatabaseIO {
                 } else {
                     ui.displayMessage("Mislykkedes at gemme brugeren");
                 }
-            } else {
-                ui.displayMessage("Brugernavn eksisterer din dumme svin");
-                addUser();
-            }
 
             if (stmt != null) {
                 stmt.close();
@@ -103,8 +102,8 @@ public class DatabaseIO {
 
     public User getAuthenticatedUser(String username, String puffPass) {
         BMI bmi = new BMI();
-        Connection conn = null;
-        PreparedStatement stmt = null;
+        Connection conn;
+        PreparedStatement stmt;
 
         this.username = username;
         this.puffPass = puffPass;
@@ -134,7 +133,11 @@ public class DatabaseIO {
                 user = new User(retrievedUserID, username, puffPass, retrievedHeight, retrievedWeight, age, gender, bmi);
 
             } else {
-                ui.displayMessage("Brugernavn findes ikke, ellers kan du ikke stave, dumbass.");
+                if (!checkUsername(username)) {
+                    ui.displayMessage("Brugernavn eksisterer ikke, prøv igen dumbo");
+                } else {
+                    ui.displayMessage("Kodeord er forkert, prøv igen spade");
+                }
             }
             stmt.close();
             conn.close();
@@ -228,7 +231,7 @@ public class DatabaseIO {
                 String name = rs.getString("Name");
                 String focusGroup = rs.getString("focusGroup");
 
-                String exercise = "\nName: " + name + "\nFocus Group: " + focusGroup;
+                String exercise = "\nNavn: " + name + "\nFokusgruppe: " + focusGroup;
 
                 System.out.println(exercise);
             }
@@ -326,7 +329,7 @@ public class DatabaseIO {
             stmt = conn.prepareStatement(sql);
 
 
-            String name = ui.getInput("Skriv maden sum du vil tilføje ");
+            String name = ui.getInput("Skriv maden som du vil tilføje ");
             double calories = Double.parseDouble(ui.getInput("Skriv calories per 100g, tjak"));
             double protein = Double.parseDouble(ui.getInput("Skriv protein per 100g"));
             stmt.setString(1, name);
@@ -351,8 +354,8 @@ public class DatabaseIO {
 
 
     public void removeUserData(String newName, String newPassword) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
+        Connection conn;
+        PreparedStatement stmt;
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -379,8 +382,8 @@ public class DatabaseIO {
     }
 
     public void updateBmiDatabase(double newBMI, double newWeight, String username) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
+        Connection conn;
+        PreparedStatement stmt;
 
         this.username = username;
 
@@ -458,12 +461,12 @@ public class DatabaseIO {
             double selectedGrams = -1;
             boolean validGrams = false;
             do {
-                String selectedGramsString = ui.getInput("Enter the amount of grams you want to eat:");
+                String selectedGramsString = ui.getInput("Indtast mængden af mad du har spist i gram:");
                 try {
                     selectedGrams = Double.parseDouble(selectedGramsString);
                     validGrams = true;
                 } catch (NumberFormatException e) {
-                    ui.displayMessage("Invalid input. Please enter a valid number for grams.");
+                    ui.displayMessage("Forkert indtastning. Indtast et tal");
                 }
             } while (!validGrams);
 
@@ -475,7 +478,7 @@ public class DatabaseIO {
             double caloriesIntake = (selectedGrams / 100.0) * caloriesPer100g;
             double proteinIntake = (selectedGrams / 100.0) * proteinPer100g;
 
-            ui.displayMessage("Nutritional values for " + selectedGrams + " grams of the selected food:");
+            ui.displayMessage("Næringsværdier for " + selectedGrams + " gram af det valgte produkt:");
             ui.displayMessage("Calories: " + caloriesIntake + " kcal");
             ui.displayMessage("Protein: " + proteinIntake + " grams");
 
@@ -492,11 +495,11 @@ public class DatabaseIO {
             int rowsInserted = insertStmt.executeUpdate();
 
             if (rowsInserted > 0) {
-                ui.displayMessage("Food intake added successfully.");
+                ui.displayMessage("Madindtag tilføjet.");
 
                 // Update user's total calories and protein intake
             } else {
-                ui.displayMessage("Failed to add food intake.");
+                ui.displayMessage("Kan ikke tilføje madindtag.");
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -585,18 +588,18 @@ public class DatabaseIO {
         int selectedFoodID = -1;
         boolean validSelection = false;
         do {
-            String selectedFoodIDString = ui.getInput("Enter the ID of the food you want to add to your intake:");
+            String selectedFoodIDString = ui.getInput("Indtast ID'et på maden du vil tilføje til dit indtag:");
             try {
                 selectedFoodID = Integer.parseInt(selectedFoodIDString);
                 validSelection = true;
             } catch (NumberFormatException e) {
-                ui.displayMessage("Invalid input. Please enter a valid food ID.");
+                ui.displayMessage("Forkert indtastning. Indtast korrekt mad ID");
             }
         } while (!validSelection);
 
         // Validate that the selected food ID exists in the database
         if (!validateFoodID(conn, selectedFoodID)) {
-            ui.displayMessage("Invalid food ID. Please select a valid food.");
+            ui.displayMessage("Forkert madID. Indtast korrekt madID");
             // Recursively call the method to allow the user to select again
             selectedFoodID = searchAndSelectFood(conn);
         }
@@ -659,8 +662,8 @@ public class DatabaseIO {
 
     //--------------------------------"Training program" ---------------------------------//
     public void addDay(User user){
-        Connection conn = null;
-        PreparedStatement stmt = null;
+        Connection conn;
+        PreparedStatement stmt;
         int user1 = user.getUserID();
 
 

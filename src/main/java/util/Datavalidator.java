@@ -1,20 +1,7 @@
 package util;
 
-import java.util.ArrayList;
-import java.util.Scanner;
-
 public class Datavalidator {
-
-    static final String DB_URL = "database URL";
-
-    // Database credentials
-    static final String USER = "username";
-    static final String PASS = "password";
-
-    Scanner scanner = new Scanner(System.in);
     TextUI ui = new TextUI();
-
-    //DataBaseIO db = new DataBaseIO(); Mangler Database
 
     public boolean checkUpperCase(String str) {
         char c;
@@ -30,34 +17,23 @@ public class Datavalidator {
             if (upperCaseFlag && lowerCaseFlag)
                 return true;
         }
-        ui.displayMessage("Kodeordet skulle have et stort bogstav, sgu da.");
         return false;
     }
 
     // tjekker længden er minimum på 8 characters i en String (password)
     public boolean checkLength(String str) {
 
-        if (str.length() < 129 && str.length() > 7) {
-            return true;
-        } else {
-            ui.displayMessage("Kodeordet skulle være mindst 8 karakter langt, for satan.");
-            return false;
-        }
+        return str.length() < 129 && str.length() > 7;
     }
 
     // tjekker om en String (password) indeholder et tal
     public boolean checkNumeric(String str) {
         char c;
-        boolean numberFlag = false;
         for (int i = 0; i < str.length(); i++) {
             c = str.charAt(i);
             if (Character.isDigit(c)) {
                 return true;
             }
-        }
-
-        if (!numberFlag) {
-            ui.displayMessage("Kodeordet skulle have et fucking tal.");
         }
         return false;
     }
@@ -70,8 +46,16 @@ public class Datavalidator {
         if (i && j && k) {
             return true;
         } else {
+            if (!i) {
+                ui.displayMessage("Kodeordet skulle have et fucking tal");
+            }
+            if (!j) {
+                ui.displayMessage("Kodeordet skulle være mindst 8 karakter langt, for satan");
+            }
+            if (!k) {
+                ui.displayMessage("Kodeordet skulle have et stort bogstav, sgu da");
+            }
             return false;
-
         }
     }
     }

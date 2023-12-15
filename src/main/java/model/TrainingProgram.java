@@ -11,25 +11,12 @@ public class TrainingProgram {
     static final String DB_URL = "jdbc:mysql://localhost/broscience";
     //  Database credentials
     static final String USER = "root";
-    static final String PASS = "NieMeyerRull2";
+    static final String PASS = "Fuckdig79";
     //-------------------------------------------------------------------------
-    int userID;
-    String username;
-    String password;
-    double height;
-    double weight;
-    int age;
-    String gender;
-    BMI bmi;
-    User user = new User(userID, username, password, height, weight, age, gender, bmi);
     TextUI ui = new TextUI();
-    ArrayList<Exercises> exercises;
-    Exercises BenchPress = new Exercises("Bench Press", 20, 12);
     ArrayList<String> schedule;
-    private int rest;
 
     public void displayExercises() {
-        DatabaseIO db = new DatabaseIO();
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -132,9 +119,8 @@ public class TrainingProgram {
     }
 
     public void addExerciseToDatabase() {
-        DatabaseIO db = new DatabaseIO();
-        Connection conn = null;
-        PreparedStatement stmt = null;
+        Connection conn;
+        PreparedStatement stmt;
 
 
         try {
