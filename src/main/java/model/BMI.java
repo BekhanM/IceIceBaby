@@ -4,32 +4,15 @@ import util.DatabaseIO;
 import util.TextUI;
 
 import javax.swing.*;
-import java.text.DecimalFormat;
 
 public class BMI {
     DatabaseIO db = new DatabaseIO();
-    int userID;
-    String username;
-    String password;
-    double targetWeight;
-    double height;
-    double weight;
-    int age;
-    double bmi;
-    BMI bmi1;
-    String gender;
-    User user = new User(userID,username, password, height, weight, age, gender, bmi1);
-
-
     TextUI ui = new TextUI();
-    DecimalFormat dec = new DecimalFormat("#,##");
 
 
     public double bmiCalculator(double height, double weight, int age) {
         double bmi = weight / (height * height);
         ui.displayMessage("Din BMI er: " + bmi);
-
-
         return bmi;
     }
 
@@ -44,17 +27,15 @@ public class BMI {
             db.updateBmiDatabase(newBMI, newWeight, user.getUsername()); // Assuming you have a method to get the user's ID
 
             //ui.displayMessage("Din BMI er: " + newBMI);
-
         }
     }
-
 
     public void checkBMI(User user) {
         double weight = user.getWeight();
         double height = user.getHeight();
         int age = user.getAge();
 
-        double userBMI = weight / (height * height);
+        double userBMI = bmiCalculator(height, weight, age);
 
         if (userBMI < 18.5) {
             ui.displayMessage("Du er sgu en lille stang");
@@ -62,7 +43,7 @@ public class BMI {
             ui.displayMessage("Perfekt");
         } else if (userBMI >= 25 && userBMI <= 29.9) {
             ui.displayMessage("Du er overvægtigt brormand");
-        } else {
+        } else if (userBMI >= 30) {
             ui.displayMessage("Du skal tabe dig med det samme");
         }
     }

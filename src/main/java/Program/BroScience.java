@@ -66,12 +66,13 @@ public class BroScience {
                 mainMenu();
             case "5":
                 db.searchFood();
-                db.addFoodIntake(db.getAuthenticatedUser(userInputUsername,userInputPassword));
+                db.addFoodIntake(db.getAuthenticatedUser(userInputUsername, userInputPassword));
                 //db.selectFoodAndCalculateIntake();
                 mainMenu();
                 break;
             case "6":
-                db.displayFoodIntake(db.getAuthenticatedUser(userInputUsername,userInputPassword));
+                db.displayFoodIntake(db.getAuthenticatedUser(userInputUsername, userInputPassword));
+                nutrition.nutritionWish(db.getBMIFromDatabase(userInputUsername,userInputPassword), db.getGenderFromDatabase(userInputUsername,userInputPassword));
                 mainMenu();
                 break;
             case "7":
