@@ -8,7 +8,6 @@ public class BroScience {
     private final TextUI ui = new TextUI();
     DatabaseIO db = new DatabaseIO();
     BMI bmi = new BMI();
-    TrainingProgram tp = new TrainingProgram();
     Nutrition nutrition = new Nutrition();
     PremadeTrainingProgram ptr = new PremadeTrainingProgram();
     private String userInputUsername;

@@ -181,11 +181,9 @@ public class DatabaseIO {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             //STEP 2: Open a connection
-            //ui.displayMessage("Connecting to database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
             //STEP 3: Execute a query
-            // ui.displayMessage("Creating statement...");
             String sql = "SELECT name, caloriesPr100, proteinPr100 FROM broscience.nutrition";
             stmt = conn.prepareStatement(sql);
 
@@ -238,11 +236,9 @@ public class DatabaseIO {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             //STEP 2: Open a connection
-            //ui.displayMessage("Connecting to database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
             //STEP 3: Execute a query
-            // ui.displayMessage("Creating statement...");
             String s = ui.getInput("Søg efter den øvelse du gerne vil se, bro.");
             String sql = "SELECT exerciseID, name, focusGroup FROM broscience.exercises WHERE INSTR(name, '" + s + "') > 0 ";
             stmt = conn.prepareStatement(sql);
@@ -251,7 +247,6 @@ public class DatabaseIO {
 
             //STEP 4: Extract data from result set
             while (rs.next()) {
-                //Retrieve by column name
                 String name = rs.getString("Name");
                 String focusGroup = rs.getString("focusGroup");
 
@@ -292,11 +287,9 @@ public class DatabaseIO {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             //STEP 2: Open a connection
-            //ui.displayMessage("Connecting to database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
             //STEP 3: Execute a query
-            // ui.displayMessage("Creating statement...");
             String s = ui.getInput("Søg efter alt det lækre mad med gains, bro.");
             String sql = "SELECT foodID, name, caloriesPr100, proteinPr100 FROM broscience.nutrition WHERE INSTR(name, '" + s + "') > 0 ";
             stmt = conn.prepareStatement(sql);
@@ -305,7 +298,6 @@ public class DatabaseIO {
 
             //STEP 4: Extract data from result set
             while (rs.next()) {
-                //Retrieve by column name
                 Integer foodID = rs.getInt("foodID");
                 String name = rs.getString("Name");
                 double caloriesPr100 = rs.getDouble("CaloriesPr100");
@@ -335,14 +327,14 @@ public class DatabaseIO {
                 if (conn != null) conn.close();
             } catch (SQLException se) {
                 se.printStackTrace();
-            }//end finally try
+            }
         }
     }
 
 
     public void addFood() {
-        Connection conn = null;
-        PreparedStatement stmt = null;
+        Connection conn;
+        PreparedStatement stmt;
 
 
         try {
@@ -429,9 +421,9 @@ public class DatabaseIO {
             int rowsAffected = stmt.executeUpdate();
 
             if (rowsAffected > 0) {
-                ui.displayMessage("BMI updated successfully!");
+                ui.displayMessage("BMI er opdateret!");
             } else {
-                ui.displayMessage("Failed to update BMI");
+                ui.displayMessage("Kunne ikke opdatere BMI");
             }
 
             stmt.close();
@@ -921,14 +913,6 @@ public class DatabaseIO {
     }
 
     public void displayDays() {
-        /* vit skulu hava workout relativt til current user
-
-       1 tad kunnu vit gera vid at brúka getUserID
-
-       2 so siga vit search database vid har userID er tad sama sum current user
-
-       3 og taka fatur í allir workoutID har userID == sum current userid
-         */
         String userID = String.valueOf(getUserIDFromDatabase(username, puffPass));
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -1006,7 +990,6 @@ public class DatabaseIO {
 
             System.out.println("\n" + "----------------------------maintenance--------------------------" + "\n");
             while (rs.next()) {
-                //Retrieve by column name
 
 
                 int trainingprogramID = rs.getInt("trainingprogramID");
