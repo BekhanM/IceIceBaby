@@ -11,7 +11,7 @@ public class DatabaseIO {
     static final String DB_URL = "jdbc:mysql://localhost/broscience";
     //  Database credentials
     static final String USER = "root";
-    static final String PASS = "Heisenberg2001!";
+    static final String PASS = "Fuckdig79";
     String username;
     String puffPass;
     int age;
@@ -49,7 +49,7 @@ public class DatabaseIO {
                     int age = Integer.parseInt(ui.getInput("Indtast din alder flinke"));
                     String gender = ui.getInput("Er du mand,kone eller noget andet?");
 
-                    double userBMI = bmi.bmiCalculator(height, weight, age);
+                    double userBMI = bmi.bmiCalculator(height, weight);
 
                     String sql = "INSERT INTO USER (username, password,height,weight,age,gender,bmi) VALUES (?, ? , ? , ? , ? , ? , ?)";
                     stmt = conn.prepareStatement(sql);
@@ -281,7 +281,7 @@ public class DatabaseIO {
             //STEP 4: Extract data from result set
             while (rs.next()) {
                 //Retrieve by column name
-                Integer foodID = rs.getInt("foodID");
+                int foodID = rs.getInt("foodID");
                 String name = rs.getString("Name");
                 double caloriesPr100 = rs.getDouble("CaloriesPr100");
                 double proteinPr100 = rs.getDouble("proteinpr100");
@@ -316,8 +316,8 @@ public class DatabaseIO {
 
 
     public void addFood() {
-        Connection conn = null;
-        PreparedStatement stmt = null;
+        Connection conn;
+        PreparedStatement stmt;
 
 
         try {

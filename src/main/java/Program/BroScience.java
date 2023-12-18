@@ -9,7 +9,6 @@ import util.TextUI;
 
 public class BroScience {
     private final TextUI ui = new TextUI();
-    DatabaseIO dbIO = new DatabaseIO();
     DatabaseIO db = new DatabaseIO();
     BMI bmi = new BMI();
     TrainingProgram tp = new TrainingProgram();
@@ -45,7 +44,8 @@ public class BroScience {
                 "\n8) Vis dine træningsdage" +
                 "\n9) Logout" +
                 "\n10) Luk programmet" +
-                "\n11) test");
+                "\n11) test" +
+                "\n12) Vis alt mad");
 
         switch (i) {
             case "1":
@@ -54,7 +54,7 @@ public class BroScience {
                 mainMenu();
                 break;
             case "2":
-                tp.modifySchedule();
+                //tp.modifySchedule();
                 mainMenu();
                 break;
             case "3":
@@ -62,7 +62,7 @@ public class BroScience {
                 mainMenu();
                 break;
             case "4":
-                tp.trainingTemplate();
+                //tp.trainingTemplate();
                 mainMenu();
             case "5":
                 db.searchFood();
@@ -89,6 +89,9 @@ public class BroScience {
                 break;
             case "11":
                 tp.addExerciseToDatabase();
+            case "12":
+                db.displayFood();
+                mainMenu();
             default:
                 ui.displayMessage("Sværger du en idiot skriv et af tallene din mongol");
                 mainMenu();

@@ -1,9 +1,9 @@
 package model;
 
 public class Exercises {
-    private String name;
-    private int reps;
-    private int sets;
+    private final String name;
+    private final int reps;
+    private final int sets;
 
     public Exercises(String name, int reps, int sets) {
         this.name = name;

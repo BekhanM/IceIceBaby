@@ -1,29 +1,9 @@
 package model;
 
-import util.DatabaseIO;
 import util.TextUI;
 
 public class Nutrition {
-    int userID;
-    String username;
-    String password;
-    double height;
-    double weight;
-    int age;
-    //String gender;
-    BMI yourBMI = new BMI();
-    //User user = new User(userID, username, password, height, weight, age, gender, yourBMI);
-    DatabaseIO db = new DatabaseIO();
     TextUI ui = new TextUI();
-
-    public void addNutrition() {
-        //db.searchForFood();
-        //addFood(); MÅSKE?
-    }
-
-    public void displayNutrition() {
-        //db.displayFood();
-    }
 
     public void recommendedNutritionIntakeMaintenance(double bmiFromDatabase, String gender) {
 
@@ -192,9 +172,5 @@ public class Nutrition {
         } else if (i.equals("3")) {
             recommendedNutritionIntakeMaintenance(bmiFromDatabase,gender);
         }
-    }
-
-    public void addNewFood() {
-
     }
 }

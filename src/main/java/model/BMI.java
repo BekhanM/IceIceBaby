@@ -10,7 +10,7 @@ public class BMI {
     TextUI ui = new TextUI();
 
 
-    public double bmiCalculator(double height, double weight, int age) {
+    public double bmiCalculator(double height, double weight) {
         double bmi = weight / (height * height);
         ui.displayMessage("Din BMI er: " + bmi);
         return bmi;
@@ -22,8 +22,7 @@ public class BMI {
                 JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             double newWeight = Double.parseDouble(ui.getInput("Indtast din nye vægt"));
             double height = user.getHeight();
-            int age = user.getAge();
-            double newBMI = bmiCalculator(height, newWeight, age); // Calculate the new BMI
+            double newBMI = bmiCalculator(height, newWeight); // Calculate the new BMI
             db.updateBmiDatabase(newBMI, newWeight, user.getUsername()); // Assuming you have a method to get the user's ID
 
             //ui.displayMessage("Din BMI er: " + newBMI);
@@ -33,9 +32,8 @@ public class BMI {
     public void checkBMI(User user) {
         double weight = user.getWeight();
         double height = user.getHeight();
-        int age = user.getAge();
 
-        double userBMI = bmiCalculator(height, weight, age);
+        double userBMI = bmiCalculator(height, weight);
 
         if (userBMI < 18.5) {
             ui.displayMessage("Du er sgu en lille stang");
