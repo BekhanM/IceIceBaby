@@ -396,6 +396,52 @@ public class DatabaseIO {
             e.printStackTrace();
         }
     }
+    public void updateWeightWish(String username) {
+        Connection conn;
+        PreparedStatement stmt;
+
+        this.username = username;
+
+        String newWeightWish = ui.getInput("Vil du bulke, cutte eller bare leve normalt, bro?" + """
+                                    
+                    1) Bulke.
+                    2) Cutte.
+                    3) Leve.
+                    """);
+        if (newWeightWish.equals("1")) {
+            newWeightWish = "Bulke".toLowerCase();
+        } else if (newWeightWish.equals("2")) {
+            newWeightWish = "Cutte".toLowerCase();
+        } else if (newWeightWish.equals("3")) {
+            newWeightWish = "Leve".toLowerCase();
+        }
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            // Update query with parameters
+            String sql = "UPDATE `broscience`.`user` SET `weightWish` = ? WHERE `username` = ?";
+            stmt = conn.prepareStatement(sql);
+
+            // Set the parameters
+            stmt.setString(1, newWeightWish);
+            stmt.setString(2, username);
+
+            // Execute the update
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                ui.displayMessage("Diæte opdateret!");
+            } else {
+                ui.displayMessage("Kunne ikke opdatere diæte");
+            }
+
+            stmt.close();
+            conn.close();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void updateBmiDatabase(double newBMI, double newWeight, String username) {
         Connection conn;
@@ -683,7 +729,74 @@ public class DatabaseIO {
         return result;
 
     }
+    public void soutFoodIntake(User user) {
+        StringBuilder formattedOutput = new StringBuilder();
+        Connection conn = null;
+        PreparedStatement stmt = null;
 
+        double totalCalories = 0;
+        double totalProtein = 0;
+        String result = null;
+        try {
+            //STEP 1: Register JDBC driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            //STEP 2: Open a connection
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            // Get the user's ID
+            int userID = user.getUserID();
+
+            //STEP 3: Execute a query
+            String sql = "SELECT n.name, ni.gram, ni.calories, ni.protein " +
+                    "FROM nutritionintake ni " +
+                    "JOIN nutrition n ON ni.foodID = n.foodID " +
+                    "WHERE ni.userID = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, userID);
+
+            ResultSet rs = stmt.executeQuery();
+
+            totalCalories = 0.0;
+            totalProtein = 0.0;
+
+            //STEP 4: Extract data from result set
+            while (rs.next()) {
+                String foodName = rs.getString("name");
+                double grams = rs.getDouble("gram");
+                double calories = rs.getDouble("calories");
+                double protein = rs.getDouble("protein");
+
+                String formatString = "Food: %-35sGrams: %-12.2fCalories: %-12.2fProtein: %-5.2f";
+                String formattedEntry = String.format(formatString, foodName, grams, calories, protein);
+                formattedOutput.append(formattedEntry).append("\n");
+
+                totalCalories += calories;
+                totalProtein += protein;
+
+            }
+            System.out.println("Mad indtaget so far: \n" + formattedOutput);
+
+            //STEP 5: Clean-up environment
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+            } catch (SQLException se2) {
+            }
+            try {
+                if (conn != null) conn.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
+
+
+    }
 
     private int searchAndSelectFood(Connection conn) throws SQLException {
         // Allow user to select a food

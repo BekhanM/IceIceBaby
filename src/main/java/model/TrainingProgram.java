@@ -26,7 +26,7 @@ public class TrainingProgram {
 
             //STEP 3: Execute a query
             // ui.displayMessage("Creating statement...");
-            String sql = "SELECT name, focusGroup FROM broscience.exercises";
+            String sql = "SELECT exerciseID, name, focusGroup FROM broscience.exercises";
             stmt = conn.prepareStatement(sql);
 
             ResultSet rs = stmt.executeQuery();
@@ -35,12 +35,12 @@ public class TrainingProgram {
             while (rs.next()) {
                 //Retrieve by column name
 
-
+                int exerciseID = rs.getInt("exerciseID");
                 String name = rs.getString("Name");
                 String focusGroup = rs.getString("focusGroup");
 
-                String formatString = "Name: %-45sfocusGroup: %-12.10s";
-                String formattedOutput = String.format(formatString, name, focusGroup);
+                String formatString = "workoutID: %-12.10sName: %-45sfocusGroup: %-12.10s";
+                String formattedOutput = String.format(formatString,exerciseID, name, focusGroup);
                 System.out.println(formattedOutput);
 
             }

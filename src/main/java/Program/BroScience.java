@@ -53,7 +53,7 @@ public class BroScience {
                 mainMenu();
                 break;
             case "2":
-                tp.modifySchedule();
+                db.updateWeightWish(userInputUsername);
                 mainMenu();
                 break;
             case "3":
@@ -61,7 +61,7 @@ public class BroScience {
                 mainMenu();
                 break;
             case "4":
-                tp.trainingTemplate();
+                db.displayProgram();
                 mainMenu();
                 break;
             case "5":
@@ -72,11 +72,20 @@ public class BroScience {
                 db.addDay(db.getAuthenticatedUser(userInputUsername, userInputPassword));
                 mainMenu();
                 break;
+            case "7":
+                db.addDayToProgram();
+                mainMenu();
+                break;
             case "8":
-                db.displayDays();
+                db.searchFood();
+                db.addFoodIntake(db.getAuthenticatedUser(userInputUsername, userInputPassword));
                 mainMenu();
                 break;
             case "9":
+                db.soutFoodIntake(db.getAuthenticatedUser(userInputUsername,userInputPassword));
+                mainMenu();
+                break;
+            case "10":
                 logout();
                 break;
             case "11":
