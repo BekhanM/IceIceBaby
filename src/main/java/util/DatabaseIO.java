@@ -11,7 +11,7 @@ public class DatabaseIO {
     static final String DB_URL = "jdbc:mysql://localhost/broscience";
     //  Database credentials
     static final String USER = "root";
-    static final String PASS = "Heisenberg2001!";
+    static final String PASS = "NieMeyerRull2";
     String username;
     String puffPass;
     int age;
@@ -926,9 +926,47 @@ public class DatabaseIO {
 
 
         }
+        public void userPremadeProgram(){
+        displayPremadeProgram();
+            Connection conn;
+            PreparedStatement stmt;
+            int user1 = user.getUserID();
+
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+                String sql = "INSERT INTO userpremadeprogram (userID,trainingprogramID) VALUES (?,?);";
+                stmt = conn.prepareStatement(sql);
+
+
+                int trainingprogramID = Integer.parseInt(ui.getInput("Indtast hvilken trainingID du vil tilføje "));
+
+                stmt.setInt(1,getUserIDFromDatabase(username, puffPass));
+                stmt.setInt(2, trainingprogramID);
+
+                int rowsAffected = stmt.executeUpdate();
+                if (rowsAffected > 0) {
+                    ui.displayMessage("trainingprogram er tilføjet.");
+                } else {
+                    ui.displayMessage("Mislykkes at gemme trainingprogram");
+                }
+
+                stmt.close();
+                conn.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+
+
+        }
 
     public void displayPremadeProgram(){
-        Connection conn = null;
+        /*Connection conn = null;
         PreparedStatement stmt = null;
         try {
             //STEP 1: Register JDBC driver
@@ -948,21 +986,29 @@ public class DatabaseIO {
 
             ResultSet rs = stmt.executeQuery();
 
-            System.out.println("\n"+"----------------------------maintenance--------------------------"+"\n");
-            //STEP 4: Extract data from result set
+            int checkID = -1;
+            System.out.println("\n"+"----------------------------MAINTENANCE--------------------------"+"\n");
             while (rs.next()) {
-                //Retrieve by column name
-
 
                 int trainingprogramID = rs.getInt("trainingprogramID");
                 String day = rs.getString("day");
-                String exerciseName = rs.getString("name"); // Corrected to fetch exercise name from 'exercises' table
+                String exerciseName = rs.getString("name");
                 int sets = rs.getInt("sets");
                 int reps = rs.getInt("reps");
 
+                if(trainingprogramID!=checkID){
+                    if (trainingprogramID == 2) {
+                        System.out.println("\n"+"----------------------------BULK--------------------------"+"\n");
+                    }
+                    if(trainingprogramID==3){
+                        System.out.println("\n"+"----------------------------CUT--------------------------"+"\n");
+                    }
+                    checkID = trainingprogramID;
+                }
                 String formatString = "trainingprogramID: %-10s day: %-15s exerciseName: %-25s sets: %-5s reps: %-5s";
                 String formattedOutput = String.format(formatString, trainingprogramID, day, exerciseName, sets, reps);
                 System.out.println(formattedOutput);
+
             }
             //STEP 5: Clean-up environment
             rs.close();
@@ -985,8 +1031,91 @@ public class DatabaseIO {
             } catch (SQLException se) {
                 se.printStackTrace();
             }//end finally try
-        }//end try
+        }//end try*/
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
+            String sql = "SELECT tp.trainingprogramID, tp.day, e.name AS exerciseName, tp.sets, tp.reps " +
+                    "FROM trainingprogram tp " +
+                    "JOIN exercises e ON tp.exerciseID = e.exerciseID " +
+                    "ORDER BY tp.trainingprogramID, tp.day"; // Order by program ID and day
+
+            stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+
+            int currentTrainingID = -1;
+            String currentDay = "";
+            while (rs.next()) {
+                int trainingprogramID = rs.getInt("trainingprogramID");
+                String day = rs.getString("day");
+                String exerciseName = rs.getString("exerciseName");
+                int sets = rs.getInt("sets");
+                int reps = rs.getInt("reps");
+
+                if (currentTrainingID != trainingprogramID) {
+                    currentTrainingID = trainingprogramID;
+                    switch (currentTrainingID) {
+                        case 1:
+                            System.out.println("\n---------------------------- Maintenance Program ----------------------------\n");
+                            break;
+                        case 2:
+                            System.out.println("\n---------------------------- Bulk Program ----------------------------\n");
+                            break;
+                        case 3:
+                            System.out.println("\n---------------------------- Cut Program ----------------------------\n");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                if (!currentDay.equals(day)) {
+                    currentDay = day;
+                    switch (currentDay) {
+                        case "push":
+                            System.out.println("\n---------------------------- Push Day ----------------------------\n");
+                            break;
+                        case "pull":
+                            System.out.println("\n---------------------------- Pull Day ----------------------------\n");
+                            break;
+                        case "legs":
+                            System.out.println("\n---------------------------- Legs Day ----------------------------\n");
+                            break;
+                        case "rest":
+                            System.out.println("\n---------------------------- Rest Day ----------------------------\n");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                String formatString = "Exercise: %-25s Sets: %-5s Reps: %-5s";
+                String formattedOutput = String.format(formatString, exerciseName, sets, reps);
+                System.out.println(formattedOutput);
+            }
+
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+            } catch (SQLException se2) {
+                se2.printStackTrace();
+            }
+            try {
+                if (conn != null) conn.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
 
 
     }

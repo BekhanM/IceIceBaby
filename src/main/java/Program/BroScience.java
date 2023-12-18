@@ -88,7 +88,7 @@ public class BroScience {
             case "10":
                 break;
             case "11":
-                tp.addExerciseToDatabase();
+                db.userPremadeProgram();
             default:
                 ui.displayMessage("Sværger du en idiot skriv et af tallene din mongol");
                 mainMenu();
