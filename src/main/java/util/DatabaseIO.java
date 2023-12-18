@@ -34,7 +34,7 @@ public class DatabaseIO {
             String username;
             do {
                 username = ui.getInput("indtast din brugernavn smukke");
-                if(checkUsername(username)) {
+                if (checkUsername(username)) {
                     ui.displayMessage("Brugernavn eksisterer allerede, prøv igen");
                 }
             } while (checkUsername(username));
@@ -44,30 +44,55 @@ public class DatabaseIO {
                 password = ui.getInput("Indtast dit kodeord søde;)");
             } while (!dv.validatePassword(password));
 
-                    double height = Double.parseDouble(ui.getInput("Indtast din højde i meter. Eks: 1.85"));
-                    double weight = Double.parseDouble(ui.getInput("Indtast din vægt i kg. Eks: 75.3"));
-                    int age = Integer.parseInt(ui.getInput("Indtast din alder flinke"));
-                    String gender = ui.getInput("Er du mand,kone eller noget andet?");
+            double height = Double.parseDouble(ui.getInput("Indtast din højde i meter. Eks: 1.85"));
+            double weight = Double.parseDouble(ui.getInput("Indtast din vægt i kg. Eks: 75.3"));
+            int age = Integer.parseInt(ui.getInput("Indtast din alder flinke"));
+            String gender = ui.getInput(
+                    """
+                            Køn:
+                            1) Mand.
+                            2) Kvinde.""");
 
-                    double userBMI = bmi.bmiCalculator(height, weight, age);
+            if (gender.equals("1")) {
+                gender = "mand".toLowerCase();
+            } else {
+                gender = "kvinde".toLowerCase();
+            }
 
-                    String sql = "INSERT INTO USER (username, password,height,weight,age,gender,bmi) VALUES (?, ? , ? , ? , ? , ? , ?)";
-                    stmt = conn.prepareStatement(sql);
-                    stmt.setString(1, username);
-                    stmt.setString(2, password);
-                    stmt.setDouble(3, height);
-                    stmt.setDouble(4, weight);
-                    stmt.setInt(5, age);
-                    stmt.setString(6, gender);
-                    stmt.setDouble(7, userBMI);
+            double userBMI = bmi.bmiCalculator(height, weight);
+
+            String weightWish = ui.getInput("Vil du bulke, cutte eller bare leve normalt, bro?" + """
+                                    
+                    1) Bulke.
+                    2) Cutte.
+                    3) Leve.
+                    """);
+            if (weightWish.equals("1")) {
+                weightWish = "Bulke".toLowerCase();
+            } else if (weightWish.equals("2")) {
+                weightWish = "Cutte".toLowerCase();
+            } else if (weightWish.equals("3")) {
+                weightWish = "Leve".toLowerCase();
+            }
+
+            String sql = "INSERT INTO USER (username, password,height,weight,age,gender,bmi, weightWish) VALUES (?, ? , ? , ? , ? , ? , ?, ?)";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            stmt.setDouble(3, height);
+            stmt.setDouble(4, weight);
+            stmt.setInt(5, age);
+            stmt.setString(6, gender);
+            stmt.setDouble(7, userBMI);
+            stmt.setString(8, weightWish);
 
 
-                int rowsAffected = stmt.executeUpdate();
-                if (rowsAffected > 0) {
-                    ui.displayMessage("Bruger er gemt");
-                } else {
-                    ui.displayMessage("Mislykkedes at gemme brugeren");
-                }
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                ui.displayMessage("Bruger er gemt");
+            } else {
+                ui.displayMessage("Mislykkedes at gemme brugeren");
+            }
 
             if (stmt != null) {
                 stmt.close();
@@ -114,7 +139,7 @@ public class DatabaseIO {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             //STEP 2: Open a connection
-            System.out.println("Connecting to database...");
+            //System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
             String sql = "SELECT userID,username, password, height, weight FROM USER WHERE username = ? AND password = ? ";
@@ -177,7 +202,7 @@ public class DatabaseIO {
 
                 String formatString = "Name: %-45sCalories: %-12.2fProtein: %-5.2f";
                 String formattedOutput = String.format(formatString, name, caloriesPr100, proteinPr100);
-                System.out.println(formattedOutput);
+              //  System.out.println(formattedOutput);
 
             }
             //STEP 5: Clean-up environment
@@ -462,7 +487,6 @@ public class DatabaseIO {
                     }
                 }
             }
-            System.out.println(bmi);
 
 
             conn.close();
@@ -471,6 +495,35 @@ public class DatabaseIO {
         }
         return bmi;
     }
+
+    public String getWeighWishFromDatabase(String username, String password) {
+        String weightWish = null;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql = "SELECT weightWish FROM user WHERE username = ? AND password = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, username);
+                stmt.setString(2, password);
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        weightWish = rs.getString("weightWish");
+                    }
+                }
+            }
+
+            conn.close();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return weightWish;
+    }
+
+
+
 
     public String getGenderFromDatabase(String username, String password) {
         String gender = null;
@@ -490,8 +543,6 @@ public class DatabaseIO {
                     }
                 }
             }
-            System.out.println(gender);
-
 
             conn.close();
         } catch (SQLException | ClassNotFoundException e) {
@@ -572,10 +623,13 @@ public class DatabaseIO {
         }
     }
 
-    public void displayFoodIntake(User user) {
+    public String displayFoodIntake(User user) {
         Connection conn = null;
         PreparedStatement stmt = null;
 
+        double totalCalories = 0;
+        double totalProtein = 0;
+        String result = null;
         try {
             //STEP 1: Register JDBC driver
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -596,8 +650,8 @@ public class DatabaseIO {
 
             ResultSet rs = stmt.executeQuery();
 
-            double totalCalories = 0.0;
-            double totalProtein = 0.0;
+            totalCalories = 0.0;
+            totalProtein = 0.0;
 
             //STEP 4: Extract data from result set
             while (rs.next()) {
@@ -606,16 +660,16 @@ public class DatabaseIO {
                 double calories = rs.getDouble("calories");
                 double protein = rs.getDouble("protein");
 
-                String formatString = "Food: %-45sGrams: %-12.2fCalories: %-12.2fProtein: %-5.2f";
+                String formatString = "Food: %-35sGrams: %-12.2fCalories: %-12.2fProtein: %-5.2f";
                 String formattedOutput = String.format(formatString, foodName, grams, calories, protein);
-                System.out.println(formattedOutput);
+               // System.out.println("Mad indtaget so far: \n" + formattedOutput);
 
                 totalCalories += calories;
                 totalProtein += protein;
             }
 
-            System.out.println("Total calories: " + totalCalories);
-            System.out.println("Total protein: " + totalProtein);
+            result = "\nKalorier indtaget: " + totalCalories + "\nProtein indtaget: " + totalProtein;
+
 
             //STEP 5: Clean-up environment
             rs.close();
@@ -634,6 +688,8 @@ public class DatabaseIO {
                 se.printStackTrace();
             }
         }
+        return result;
+
     }
 
 
@@ -714,7 +770,7 @@ public class DatabaseIO {
 
 
     //--------------------------------"Training program" ---------------------------------//
-    public void addDay(User user){
+    public void addDay(User user) {
         Connection conn;
         PreparedStatement stmt;
         int user1 = user.getUserID();
@@ -785,7 +841,7 @@ public class DatabaseIO {
 
                     String formatString = "day: %-5s exercise: %-30s sets: %-5s reps: %s";
 
-                    String formattedOutput = String.format(formatString, day,exerciseName, sets1, reps1);
+                    String formattedOutput = String.format(formatString, day, exerciseName, sets1, reps1);
 
                     System.out.println(formattedOutput);
                 }
@@ -902,32 +958,32 @@ public class DatabaseIO {
 
             }
 
-                rs.close();
-                stmt.close();
-                conn.close();
-            } catch (SQLException se) {
-                //Handle errors for JDBC
-                se.printStackTrace();
-            } catch (Exception e) {
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            //Handle errors for JDBC
+            se.printStackTrace();
+        } catch (Exception e) {
 
-                e.printStackTrace();
-            } finally {
+            e.printStackTrace();
+        } finally {
 
-                try {
-                    if (stmt != null) stmt.close();
-                } catch (SQLException se2) {
-                }
-                try {
-                    if (conn != null) conn.close();
-                } catch (SQLException se) {
-                    se.printStackTrace();
-                }
+            try {
+                if (stmt != null) stmt.close();
+            } catch (SQLException se2) {
             }
-
-
+            try {
+                if (conn != null) conn.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
         }
 
-    public void displayPremadeProgram(){
+
+    }
+
+    public void displayPremadeProgram() {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -948,8 +1004,7 @@ public class DatabaseIO {
 
             ResultSet rs = stmt.executeQuery();
 
-            System.out.println("\n"+"----------------------------maintenance--------------------------"+"\n");
-            //STEP 4: Extract data from result set
+            System.out.println("\n" + "----------------------------maintenance--------------------------" + "\n");
             while (rs.next()) {
                 //Retrieve by column name
 
@@ -986,7 +1041,6 @@ public class DatabaseIO {
                 se.printStackTrace();
             }//end finally try
         }//end try
-
 
 
     }

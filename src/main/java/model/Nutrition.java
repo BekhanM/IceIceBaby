@@ -25,7 +25,7 @@ public class Nutrition {
         //db.displayFood();
     }
 
-    public void recommendedNutritionIntakeMaintenance(double bmiFromDatabase, String gender) {
+    public String recommendedNutritionIntakeMaintenance(double bmiFromDatabase, String gender) {
 
         int recommendedCal = 0;
         int recommendedProt = 0;
@@ -35,7 +35,7 @@ public class Nutrition {
             recommendedCal += 2778;
             recommendedProt += 208;
 
-            if (gender.equalsIgnoreCase("female")) {
+            if (gender.equalsIgnoreCase("kvinde")) {
                 recommendedCal -= 229;
                 recommendedProt -= 17;
             }
@@ -45,7 +45,7 @@ public class Nutrition {
             recommendedCal += 2640;
             recommendedProt += 198;
 
-            if (gender.equalsIgnoreCase("female")) {
+            if (gender.equalsIgnoreCase("kvinde")) {
                 recommendedCal -= 228;
                 recommendedProt -= 17;
             }
@@ -55,7 +55,7 @@ public class Nutrition {
             recommendedCal += 2365;
             recommendedProt += 177;
 
-            if (gender.equalsIgnoreCase("female")) {
+            if (gender.equalsIgnoreCase("kvinde")) {
                 recommendedCal -= 228;
                 recommendedProt -= 28;
             }
@@ -65,49 +65,46 @@ public class Nutrition {
             recommendedCal += 2090;
             recommendedProt += 157;
 
-            if (gender.equalsIgnoreCase("female")) {
+            if (gender.equalsIgnoreCase("kvinde")) {
                 recommendedCal -= 228;
                 recommendedProt -= 17;
             }
         }
 //**********************************************************************************//
-        System.out.println("this shoudl be it " + bmiFromDatabase);
-        System.out.println("the gender from db" + gender);
-        System.out.println("Recommended Calories: " + recommendedCal);
-        System.out.println("Recommended Protein: " + recommendedProt);
+        return "\nAnbefalet Daglig Kalorierindtag " + recommendedCal + "\nAnbefalet Daglig Proteinindtag " + recommendedProt;
     }
 
 
-    public void recommendedNutritionIntakeCut(double bmiFromDatabase, String gender) {
+    public String recommendedNutritionIntakeCut(double bmiFromDatabase, String gender) {
         int recommendedCal = 0;
         int recommendedProt = 0;
 //**********************************************************************************//
         //100kg
-        if (bmiFromDatabase  >= 30) {
+        if (bmiFromDatabase >= 30) {
             recommendedCal += 2278;
             recommendedProt += 171;
 
-            if (gender.equalsIgnoreCase("female")) {
+            if (gender.equalsIgnoreCase("kvinde")) {
                 recommendedCal -= 229;
                 recommendedProt -= 17;
             }
 //**********************************************************************************//
             //90kg
-        } else if (bmiFromDatabase >= 25 && bmiFromDatabase  <= 29.99) {
+        } else if (bmiFromDatabase >= 25 && bmiFromDatabase <= 29.99) {
             recommendedCal += 2140;
             recommendedProt += 163;
 
-            if (gender.equalsIgnoreCase("female")) {
+            if (gender.equalsIgnoreCase("kvinde")) {
                 recommendedCal -= 228;
                 recommendedProt -= 20;
             }
 //**********************************************************************************//
             //70kg
-        } else if (bmiFromDatabase >= 18.5 && bmiFromDatabase  <= 24.99) {
+        } else if (bmiFromDatabase >= 18.5 && bmiFromDatabase <= 24.99) {
             recommendedCal += 1865;
             recommendedProt += 140;
 
-            if (gender.equalsIgnoreCase("female")) {
+            if (gender.equalsIgnoreCase("kvinde")) {
                 recommendedCal -= 228;
                 recommendedProt -= 17;
             }
@@ -117,18 +114,17 @@ public class Nutrition {
             recommendedCal += 1590;
             recommendedProt += 119;
 
-            if (gender.equalsIgnoreCase("female")) {
+            if (gender.equalsIgnoreCase("kvinde")) {
                 recommendedCal -= 228;
                 recommendedProt -= 17;
             }
         }
 //**********************************************************************************//
-        System.out.println("Recommended Calories: " + recommendedCal);
-        System.out.println("Recommended Protein: " + recommendedProt);
+        return "\nAnbefalet Daglig Kalorierindtag " + recommendedCal + "\nAnbefalet Daglig Proteinindtag " + recommendedProt;
     }
 
 
-    public void recommendedNutritionIntakeBulk(double bmiFromDatabase, String gender) {
+    public String recommendedNutritionIntakeBulk(double bmiFromDatabase, String gender) {
         int recommendedCal = 0;
         int recommendedProt = 0;
 //**********************************************************************************//
@@ -137,27 +133,27 @@ public class Nutrition {
             recommendedCal += 3278;
             recommendedProt += 246;
 
-            if (gender.equalsIgnoreCase("female")) {
+            if (gender.equalsIgnoreCase("kvinde")) {
                 recommendedCal -= 229;
                 recommendedProt -= 17;
             }
 //**********************************************************************************//
             //90kg
-        } else if (bmiFromDatabase  >= 25 && bmiFromDatabase <= 29.99) {
+        } else if (bmiFromDatabase >= 25 && bmiFromDatabase <= 29.99) {
             recommendedCal += 3140;
             recommendedProt += 236;
 
-            if (gender.equalsIgnoreCase("female")) {
+            if (gender.equalsIgnoreCase("kvinde")) {
                 recommendedCal -= 228;
                 recommendedProt -= 18;
             }
 //**********************************************************************************//
             //70kg
-        } else if (bmiFromDatabase >= 18.5 && bmiFromDatabase  <= 24.99) {
+        } else if (bmiFromDatabase >= 18.5 && bmiFromDatabase <= 24.99) {
             recommendedCal += 2865;
             recommendedProt += 215;
 
-            if (gender.equalsIgnoreCase("female")) {
+            if (gender.equalsIgnoreCase("kvinde")) {
                 recommendedCal -= 228;
                 recommendedProt -= 17;
             }
@@ -167,31 +163,27 @@ public class Nutrition {
             recommendedCal += 2590;
             recommendedProt += 194;
 
-            if (gender.equalsIgnoreCase("female")) {
+            if (gender.equalsIgnoreCase("kvinde")) {
                 recommendedCal -= 228;
                 recommendedProt -= 17;
             }
         }
 //**********************************************************************************//
-        System.out.println("Recommended Calories: " + recommendedCal);
-        System.out.println("Recommended Protein: " + recommendedProt);
+        return "\nAnbefalet Daglig Kalorierindtag: " + recommendedCal + "Anbefalet Daglig Proteinindtag " + recommendedProt;
     }
 
-    public void nutritionWish(double bmiFromDatabase, String gender) {
-        String i = ui.getInput("Vil du bulke, cutte eller bare leve normalt, bro?" + """
-                
-                1) Bulke.
-                2) Cutte.
-                3) Leve.
-                """);
-        System.out.println("User input: " + i);
-        if (i.equals("1")) {
-            recommendedNutritionIntakeBulk(bmiFromDatabase, gender);
-        } else if (i.equals("2")) {
-            recommendedNutritionIntakeCut(bmiFromDatabase, gender);
-        } else if (i.equals("3")) {
-            recommendedNutritionIntakeMaintenance(bmiFromDatabase,gender);
+    public String nutritionWish(double bmiFromDatabase, String gender, String weightWishFromDatabase) {
+        String result = "";
+
+        if (weightWishFromDatabase.equals("bulke")) {
+            result = recommendedNutritionIntakeBulk(bmiFromDatabase, gender);
+        } else if (weightWishFromDatabase.equals("cutte")) {
+            result = recommendedNutritionIntakeCut(bmiFromDatabase, gender);
+        } else if (weightWishFromDatabase.equals("leve")) {
+            result = recommendedNutritionIntakeMaintenance(bmiFromDatabase, gender);
         }
+
+        return result;
     }
 
     public void addNewFood() {

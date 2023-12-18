@@ -10,7 +10,7 @@ public class BMI {
     TextUI ui = new TextUI();
 
 
-    public double bmiCalculator(double height, double weight, int age) {
+    public double bmiCalculator(double height, double weight) {
         double bmi = weight / (height * height);
         ui.displayMessage("Din BMI er: " + bmi);
         return bmi;
